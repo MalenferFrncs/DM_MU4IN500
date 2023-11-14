@@ -169,9 +169,52 @@ let rec unionFile (f1:file_b) (f2:file_b) : file_b =
 ;;
 
 
+(* fin de l'union *)
 
 
-  
+(* debut de Suppr min *) 
+let rec get_min (tl: tournois_b list) (i : entier128): tournois_b list * tournois_b =
+  match tl with
+  []-> [],Empty
+  |Empty::tl -> [],Empty
+  |Racine(deg,cle,fils)::tl -> if (inf cle i) then (    (* si on a une racine plus petite que tout les tournois precedant*)
+    match (get_min tl cle) with
+    |li,Empty-> li,Racine(deg,cle,fils)   (* si on  a pas de tournois plus a droite *)
+    |li,Racine(deg2,cle2,fils2)-> Racine(deg,cle,fils)::li,Racine(deg2,cle2,fils2)  (* si on a un tournois plus petit a droite*)
+    )
+  else  (* si on a un racine plus petite dans un tournois a gauche *)
+  let tl,min = get_min tl i in 
+  Racine(deg,cle,fils)::tl,min   (*on renvoit la liste privié du plus petit tournois + le tournois actuel et le plus petit tournois*)
+;;
+
+let suppr_min (f:file_b) : file_b =
+  match f with
+  |Empty -> Empty
+  |File(indice,tournois) ->   (*si la file est normal*)
+    match tournois with
+    |[]->Empty
+    |Empty::tl -> Empty 
+    |Racine(deg,cle,fils)::tl-> 
+      let list_sans_min,tournois_min = get_min tournois cle in 
+      (unionFile (File((indice - (pow 2 (degree tournois_min) 1)),list_sans_min)) (decapiter tournois_min))
+          (* union entre la file privé de son tournois min et de la file produite par le tournois min decapité*)
+;;
+
+(* fin supression pin*)
+
+
+(* debut ajout *)
+
+let ajout_file (x:entier128) (f:file_b) : file_b =
+  let tx : tournois_b = Racine(0,x,Empty::[]) in
+  let fx : file_b = File(1,tx::[]) in 
+  unionFile f fx 
+;;
+
+(* fin de l'ajout *)
+
+
+
 
 
 
