@@ -1,4 +1,5 @@
 open Int32;;
+open In_channel;;
 
 (*Representation des entiers codes sur 128 bits*)
 
@@ -16,7 +17,7 @@ let inf (cle1 : entier128) (cle2 : entier128) : bool =
           (Int32.unsigned_compare b1 b2) < 0
       else 
         (Int32.unsigned_compare a1 a2) < 0;;
-
+      ;;
 
 let inf (cle1 : entier128) (cle2 : entier128) : bool = 
   let (a1, b1, c1, d1) = cle1 and (a2, b2, c2, d2) = cle2 in 
@@ -33,6 +34,15 @@ let inf (cle1 : entier128) (cle2 : entier128) : bool =
       false
   else 
     false
+  ;;
+
+  let int_128_of_str(str:string):entier128 =
+  let x1 : int32 = Int32.of_string(String.sub str 0 10) in
+  let x2 : int32 = Int32.of_string(String.cat "0x" (String.sub str 10 8)) in
+  let x3 : int32 = Int32.of_string(String.cat "0x"(String.sub str 18 8)) in
+  let x4 : int32 = Int32.of_string(String.cat "0x"(String.sub str 26 8)) in 
+  (x1,x2,x3,x4)
+;;
 
 
 (* representation des files binomials et des tournois binomiaux *)
@@ -212,11 +222,17 @@ let ajout_file (x:entier128) (f:file_b) : file_b =
 
 (* fin de l'ajout *)
 
+(* debut de la construction *)
 
+let construction (file_name : string) : file_b =
+  let fileIN = open_in file_name in
+  let loop (file : In_channel.t) = 
+    match input_line file with
+    |None -> Empty
+    |str -> ajout_file (int_128_of_str str) (loop file)
+  in
+  loop fileIN
+;;
 
-
-
-
-  
-
+(* fin de la construction *)
 
