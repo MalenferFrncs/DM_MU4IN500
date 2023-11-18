@@ -38,7 +38,7 @@ let inf (cle1 : entier128) (cle2 : entier128) : bool =
 (* representation des files binomials et des tournois binomiaux *)
 
 type tournois_b = Racine of int * entier128 * (tournois_b list)  | Empty (*Racine(degree,clé,fils)*)
-type file_b = File of int * (tournois_b list) | Empty (*File(indice,tournois) *)
+type file_b = File of int * (tournois_b list) | Empty (*File(indice,tournois) tournois le plus petit a droite de la liste *) 
 
 
 (* ajouts des primitives sur les files binomiales et les tournois binomiaux *)
@@ -67,10 +67,16 @@ let rec  pow (x: int)(n:int)(res:int) : int =
     pow x (n-1) (res*x)
 ;;
 
+let rec tournois_reverse (ol : tournois_b list ) (nl : tournois_b list): tournois_b list = 
+  match ol with
+  | Empty::_ | [] -> nl 
+  | e::Empty::_ | e::[] -> e::nl
+  | e::tl -> tournois_reverse tl (e::nl)
+
 let decapiter (t: tournois_b) : file_b =
   match t with
   |Empty -> Empty
-  |Racine(deg,cle,tl) -> File(((pow 2 deg 1)-1),tl)
+  |Racine(deg,cle,tl) -> File(((pow 2 deg 1)-1),(tournois_reverse tl []))
 ;;
 
 let file(t:tournois_b) : file_b =
@@ -95,25 +101,18 @@ let rec last_tournois  (li : tournois_b list) : tournois_b =
 
 let mindeg (f:file_b) : tournois_b =
   match f with
-  |Empty -> Empty
-  |File(indice,tl) -> last_tournois tl
+  |Empty |File(_,[]) -> Empty 
+  |File(indice,e::tl) -> e
 ;;
 
 let reste (f:file_b) : file_b =
   match f with
   |Empty -> Empty  (* si on donne une file vide en entré ou renvois une file vide*)
   |File(indice,tl)->
-    let rec new_list (tl : tournois_b list) : tournois_b list * tournois_b = (* retourne la listes de tournois privé du dernier element et le derniere element*)
-      match tl with
-      |[] -> [],Empty    
-      |e::[] -> [],e        
-      |e::Empty::li -> [],e        (* 3 cas ou on a plus d'element dans la file après *)
-      |e::tl -> let nl,lm = new_list tl in (e::nl),lm  (* cas ou il rest au moins un element *)
-    in
-    match new_list tl with  (* on match le couple (tournois restant, ancien dernier tournois)*)
-    [],_ -> Empty
-    |_,Empty -> Empty   (* deux cas ou il ne reste plus de tournois (pas de listes et pas de dernier element)*)
-    |li,Racine(deg,cle,fils)-> File((indice-(pow 2 deg 1)),li)  (* on renvois la nouvelle file d'indice (n-nombre de noeud de l'ancien dernier tournois) *)
+    match tl with  (* on match le couple (tournois restant, ancien dernier tournois)*)
+    |[]|Empty::_ |    (* deux cas ou on a des listes de tournois vides*)
+    _::Empty::_ | _::[] -> Empty  (* desux cas ou on a des listes de tournois de 1 element (file vide après retrait)*)
+    |Racine(deg,cle,fils)::li-> File((indice-(pow 2 deg 1)),li)  (* on renvois la nouvelle file d'indice (n-nombre de noeud de l'ancien dernier tournois) *)
 ;;
 
 let ajout_min (t:tournois_b) (f:file_b) : file_b = 
@@ -121,7 +120,7 @@ let ajout_min (t:tournois_b) (f:file_b) : file_b =
   | Empty,Empty -> Empty  (* on donne un tournois et une file vide on renvois une file vide*)
   | Empty,fi -> fi (* on donne un tournois vide et une file  on renvoit la file*)
   | tr,Empty -> file t (* on donne un tournois et une file vide on renvoie la file composé du tournois *)
-  | Racine(deg,cle,fils),File(indice,lt)-> File((indice+ (pow 2 deg 1)),(lt @ Racine(deg,cle,fils)::[]) ) (*tournois et file generals, on ajoute le nombre de noeuds du tournois au degrés de la file et on ajoute le tournois a la fin de la liste de tournois de file*)
+  | Racine(deg,cle,fils),File(indice,lt)-> File((indice+ (pow 2 deg 1)),(Racine(deg,cle,fils)::lt) ) (*tournois et file generals, on ajoute le nombre de noeuds du tournois au degrés de la file et on ajoute le tournois a la fin de la liste de tournois de file*)
 ;;
 
 
@@ -212,7 +211,6 @@ let ajout_file (x:entier128) (f:file_b) : file_b =
 ;;
 
 (* fin de l'ajout *)
-
 
 
 
