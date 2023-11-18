@@ -226,7 +226,7 @@ let ajout_file (x:entier128) (f:file_b) : file_b =
 
 let construction (file_name : string) : file_b =
   let fileIN = open_in file_name in
-  let loop (file : In_channel.t) = 
+  let rec loop (file : In_channel.t) = 
     match input_line file with
     |None -> Empty
     |str -> ajout_file (int_128_of_str str) (loop file)
