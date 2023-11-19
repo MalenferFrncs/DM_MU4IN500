@@ -100,8 +100,6 @@ let rec retrait_tasse (h : 'a heapTree) : 'a heapTree * 'a =
   | E -> failwith "Empty heap"
   | L(e) -> (E, e)
   | N(r, d, e, L(efg), E) -> (L( e), efg)
-  | N(r,d, e, L(efg), L(efd)) -> (N (r-1, d-1,e, L(efg),E), efd)                             
-  | N(r,d, e, fg, N(_,_,efd,L(ef),E)) -> (N(r, d-1, e, fg, L(efd)) , ef)
   | N(r,d, e, fg, fd) -> 
       if rank fg = rank fd  then 
         (if (nbdesc fg > nbdesc fd) then 
