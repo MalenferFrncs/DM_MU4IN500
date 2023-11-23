@@ -1,5 +1,5 @@
 open Int32;;
-open In_channel;;
+(*open In_channel;; *)
 
 (*Representation des entiers codes sur 128 bits*)
 
@@ -130,7 +130,7 @@ let ajout_min (t:tournois_b) (f:file_b) : file_b =
   | Empty,Empty -> Empty  (* on donne un tournois et une file vide on renvois une file vide*)
   | Empty,fi -> fi (* on donne un tournois vide et une file  on renvoit la file*)
   | tr,Empty -> file t (* on donne un tournois et une file vide on renvoie la file composé du tournois *)
-  | Racine(deg,cle,fils),File(indice,lt)-> File((indice+ (pow 2 deg 1)),(Racine(deg,cle,fils)::lt) ) (*tournois et file generals, on ajoute le nombre de noeuds du tournois au degrés de la file et on ajoute le tournois a la fin de la liste de tournois de file*)
+  | Racine(deg,cle,fils),File(indice,lt)-> File((indice+ (pow 2 deg 1)),(Racine(deg,cle,fils)::lt) ) (*tournois et file generals, on ajoute le nombre de noeuds du tournois au degrés de la file et on ajoute le tournois au debut de la liste de tournois de file*)
 ;;
 
 
@@ -224,14 +224,21 @@ let ajout_file (x:entier128) (f:file_b) : file_b =
 
 (* debut de la construction *)
 
-let construction (file_name : string) : file_b =
+let construction_file (file_name : string) (nb_entier : int): file_b =
   let fileIN = open_in file_name in
-  let rec loop (file : In_channel.t) = 
-    match input_line file with
-    |None -> Empty
-    |str -> ajout_file (int_128_of_str str) (loop file)
+  let rec loop file_bino nb_entier : file_b = 
+    if nb_entier = 0 then file_bino
+    else
+      let str : string = input_line fileIN in  
+      loop (ajout_file (int_128_of_str str) file_bino) (nb_entier -1) 
   in
-  loop fileIN
+  loop Empty nb_entier
+;;
+
+let rec construction_list (li : entier128 list) (acc : file_b): file_b =
+  match  li  with
+  | [] -> acc
+  | hd::tl -> construction_list tl (ajout_file hd acc)
 ;;
 
 (* fin de la construction *)
