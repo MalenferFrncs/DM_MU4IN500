@@ -23,6 +23,8 @@ let nbdesc (t : 'a heapTree) : int =
   | N(_,nd,_,_,_) -> nd;;
           
 
+
+
 let elemSurDernierRang (h :'a  heapTree) = nbdesc h > (Int.shift_left 1 ((rank h)))-2
                                            
                      
@@ -133,5 +135,3 @@ let rec ajout_feuille_iter (l : int list) (h : 'a heapTree) : 'a heapTree =
           
 let rec retrait_feuille_iter (n : int) (h : 'a heapTree) : 'a heapTree = 
   if n = 0 then h else let ( h2, _) = retrait_tasse h in retrait_feuille_iter (n-1) h2;;
-          
-let t= ajout_feuille_iter [16;2;3;11;14;15;10;13;4;5;6;7;8;9;12;1] E in (retrait_feuille_iter 10 t);;
