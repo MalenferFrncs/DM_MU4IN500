@@ -137,32 +137,55 @@ let rec retrait_feuille_iter (n : int) (h : 'a heapTree) : 'a heapTree =
   if n = 0 then h else let ( h2, _) = retrait_tasse h in retrait_feuille_iter (n-1) h2;;
 
 
-  (*Idée : construire par le bas (en faisant les buble down) en utilisant la fin de la récursion pour récupérer les arbres
+(*Idée : construire par le bas (en faisant les buble down) en utilisant la fin de la récursion pour récupérer les arbres
   construits précédemment pour réassembler avec l'élément de la liste actuelle*)
+
+let rec log2 x =
+  match x with
+  | 1 -> 0
+  | _ -> 1 + log2 ((x) / 2)
+  
+let two_pow (n : int) = Int.shift_left 1 n
+  
+let empty_dernier_rang (n : int ) : int =
+  (two_pow (log2 n+1))-1 - n
 
   
 
+    (*Construit pour l'instant un arbre binaire tassé à gauche*)
+    (*TODO : appels à buble down sur chaque nœud créé avant de l'ajouter à la liste*)
 let rec construction (l : 'a list) : 'a heapTree = 
-  let rec faire_n_feuilles (n : int) (l : 'a list) : ('a heapTree list * 'a list) = 
+  let rec faire_n_feuilles (n : int) (l : 'a list) (cpt : int): ('a heapTree list * 'a list) = 
     match l with 
     |[] -> ([],[])
     | h:: tl -> 
         if n > 0 then 
-          let (lf, reste) = faire_n_feuilles (n-1) tl in (L(h)::lf,reste)
-        else ([],h::tl)
+          if cpt > 0 then 
+            let (lf, reste) = faire_n_feuilles (n-1) l (cpt-1) in (E::lf,reste)
+          else
+            let (lf, reste) = faire_n_feuilles (n-1) tl 0 in (L(h)::lf,reste) 
+        else ([],l) 
+             
   and aux (l : 'a list) (lfeuille : 'a heapTree list ) (ltree : 'a heapTree list) : 'a heapTree = 
     match (l, lfeuille, ltree) with 
     | ([],[],[]) -> E
     | ([],[], [hp]) -> hp
+    | ([],[hp],[] )-> hp
     | (h::tl ,[], fg::fd::tlt) -> 
         (aux tl [] (N( (min (rank fg) (rank fd))+1, (nbdesc fg) + (nbdesc fd) +1, h, fg, fd) :: tlt))
     | (h::tl, [leaf], _) -> 
         (aux tl [] (N( 1, 1, h, leaf, E) :: ltree))
-    | (h::tl, l1::l2::tlf, _) -> 
-        (aux tl tlf (N( 2, 2, h, l1, l2) :: ltree)) 
+    | (h::tl, ld::lg::tlf, _) -> 
+        match (lg,ld) with 
+        | (E,E) -> (aux tl tlf (L(h):: ltree) )
+        | (_,_) -> (aux tl tlf (N( 2, 2, h, lg, ld) :: ltree)) 
   in 
-  let hauteur = log2 (List.length l) in
-  let (lf, ln) = faire_n_feuilles (nbfeuilles) l in 
-  
-  (aux ln (padding (*formule à trouver*)  lf) [])
+  let hauteur = log2 (List.length l) in 
+  let taille_etg = two_pow hauteur and
+    padding = empty_dernier_rang (List.length l)
+  in
+  let (lf, ln) = faire_n_feuilles taille_etg l padding in 
+  (aux ln lf [])
+     
+ 
      

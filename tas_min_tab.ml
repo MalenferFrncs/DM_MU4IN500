@@ -79,3 +79,55 @@ let ajout_iteratif (l : 'a list) : 'a heapArray =
   in (aux (makeEmptyHeapArray (List.length l)) l);;
 
 
+  let bubble_down (hp : 'a heapArray) (p : int) : unit = 
+    let (ind,sz, tab) = hp and i = ref p in
+    while (est_non_valide !i hp) do
+      try(
+        match (tab.(fg !i), tab.(fd !i)) with 
+        | (Some(eltg), None) -> 
+            let tmp = tab.(!i) in 
+            tab.(!i) <- tab.(fg !i) ; 
+            tab.(fg !i) <- tmp ; 
+            i := (fg !i)
+        | (Some(eltg), Some(eltd)) -> 
+            if eltg > eltd then 
+              let tmp = tab.(!i) in 
+              tab.(!i) <- tab.(fd !i) ; 
+              tab.(fd !i) <- tmp ; 
+              i := (fd !i)
+            else 
+              let tmp = tab.(!i) in 
+              tab.(!i) <- tab.(fg !i) ; 
+              tab.(fg !i) <- tmp ; 
+              i := (fg !i)
+        | (_,_) -> failwith "Cas impossible"
+      ) with Invalid_argument s -> 
+        (match tab.(fg !i) with
+         | None -> ()
+         | Some(elt) ->
+             let tmp = tab.(!i) in 
+             tab.(!i) <- tab.(fg !i) ; 
+             tab.(fg !i) <- tmp ; 
+             i := (fg !i)
+        )
+    done; 
+  ;;
+  
+  let construction (l : 'a list) : 'a heapArray = 
+    let lgth = List.length l in 
+    let hp = makeHeapArray lgth lgth (Array.of_list (List.map (fun x -> Some(x)) l))
+    and i = ref ((lgth-1) /2)
+    in 
+    while (!i >= 0) do 
+      Printf.printf " On regarde le nœud %d\n" !i;
+      (bubble_down hp !i);
+      i := !i -1
+    done;
+    hp;;
+  
+  
+  
+  
+  let t= construction [8;25;-3;13;24;16;145;6;19;2;3;4;7;1] in t;;
+  
+  let ta = ajout_iteratif [8;25;-3;13;24;16;145;6;19;2;3;4;7;1] in ta;;
