@@ -1,4 +1,3 @@
-
 (*Ce code est inspiré par la structure proposée par Chris Okasaki dans Purely Functionnal Data Structures
   le rang est défini comme étant la distance vers l'emplacement vide le plus proche*)
 (* Noeud ( rang,ndescendances, elt, fg, fd*)
@@ -165,9 +164,8 @@ let rec faire_n_feuilles (n : int) (l : 'a list) (cpt : int): ('a heapTree list 
            
           (* Calcule le nombre de fils qu'il veut à gauche : récupère la liste, la balance à droite (il sait sait aussi combien il en faut droite *)
 
-let rec make_tas (li : 'a list) (taille : int) :  ('a heapTree * 'a list)=
-  let taille = taille -1 in
-  if taille = 0 then (E,li)
+let rec make_tas (li : 'a list) (taille : int) :  ('a heapTree * 'a list)= 
+  if taille = 0 or taille < 0 then (E,li)
   else if taille = 1 then
     match li with 
     | [] -> failwith "invalid argument"
@@ -175,24 +173,23 @@ let rec make_tas (li : 'a list) (taille : int) :  ('a heapTree * 'a list)=
   else
     let hauteur = log2 taille in
     let hauteur_prec = hauteur -1 in
-    let nb_noeuds_prec = taille - ((two_pow hauteur)-1) in
-    let reste = nb_noeuds_prec in 
-    if reste < ((two_pow hauteur_prec)/2) then
-      let nb_elem_gauche = reste+ (hauteur_prec/2) in
-      let nb_elem_droite = hauteur_prec/2 in
+    let reste = taille - ((two_pow hauteur)-1) in 
+    if reste < ((two_pow hauteur)/2) then
+      let nb_elem_gauche = reste+ (((two_pow (hauteur_prec+1)) -1)/2) in
+      let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) in
       let (fg,lr) = make_tas li nb_elem_gauche in
       let (fd,lr2) = make_tas lr nb_elem_droite in
       match lr2 with 
       | [] -> failwith "invalid argument"
-      | h::tl ->( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd), tl)
+      | h::tl ->( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd), tl) 
     else
-      let nb_elem_gauche = ((two_pow hauteur_prec)/2) + (hauteur_prec/2) in
-      let nb_elem_droite = (hauteur_prec/2) + (reste - ((two_pow hauteur_prec)/2)) in
+      let nb_elem_gauche = ((two_pow hauteur)/2) + (((two_pow (hauteur_prec+1)) -1)/2) in
+      let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) + (reste - ((two_pow hauteur)/2)) in
       let (fg,lr) = make_tas li nb_elem_gauche in
       let (fd,lr2) = make_tas lr nb_elem_droite in
       match lr2 with 
       | [] -> failwith "invalid argument"
-      | h::tl ->( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd), tl)
+      | h::tl ->( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd), tl) 
     
   
   
@@ -202,16 +199,41 @@ let rec make_liste_test (n : int) : int list =
   if n = 0 then []
   else n::(make_liste_test (n-1));;
 (*Faire un accumulateur pour l'étage en construction*)
-
-  
-N (2, 6, 3, 
-   L 7, 
-   N (1, 2, 4,
-      E, 
-      N (1, 1, 5, 
-         E, 
-         L 6)))
-  
-  
+make_tas (make_liste_test 32) 32 ;;
 
 
+N (5, 31, 1,
+   N (4, 15, 17,
+      N (3, 7, 25, 
+         N (2, 3, 29, 
+            N (1, 1, 31, 
+               L 32, 
+               E), 
+            L 30),
+         N (2, 2, 26, 
+            L 28, 
+            L 27)
+        ),
+      N (3, 6, 18, 
+         N (2, 2, 22, 
+            L 24, 
+            L 23), 
+         N (2, 2, 19, 
+            L 21, 
+            L 20))),
+   N (4, 14, 2,
+      N (3, 6, 10, 
+         N (2, 2, 14, 
+            L 16, 
+            L 15), 
+         N (2, 2, 11, 
+            L 13, 
+            L 12)),
+      N (3, 6, 3, 
+         N (2, 2, 7, 
+            L 9, 
+            L 8), 
+         N (2, 2, 4, 
+            L 6, 
+            L 5))))
+  
