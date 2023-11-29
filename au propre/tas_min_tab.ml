@@ -1,5 +1,7 @@
+open Int128
 
-type 'a heapArray = int ref * int ref * ('a option) Array.t;;
+
+type heapArray = int ref * int ref * (Int128.entier128 option) Array.t;;
 
 let pere (i : int) = (i-1) /2;;
 
@@ -31,7 +33,7 @@ let rec ajout (hp : 'a heapArray) (elt : 'a) : 'a heapArray =
   try (
     tab.(!ind) <- Some(elt);
     ind := !ind +1;
-    while (!i > 0 && (tab.(!i) < tab.(!ind_pere))) do   (*Pas de problème avec les None car on remonte*)
+    while (!i > 0 && (  Int128.inf tab.(!i) tab.(!ind_pere) )) do   (*Pas de problème avec les None car on remonte*)
       let tmp = tab.(!i) in
       tab.(!i) <- tab.(!ind_pere);
       tab.(!ind_pere) <- tmp ; 
@@ -52,13 +54,13 @@ let est_non_valide (i : int) (hp : 'a heapArray) : bool =
         (try (
            match (tab.(fg i), tab.(fd i)) with 
            | (None, None) -> false
-           | (Some(eltg), None) -> racine > eltg
-           | (Some(eltg), Some(eltd)) -> racine > eltg || racine > eltd
+           | (Some(eltg), None) -> Int128.inf eltg racine
+           | (Some(eltg), Some(eltd)) -> (Int128.inf eltg racine) || (Int128.inf eltd racine)
            | (None, Some(_)) -> failwith "Tas mal construit !"
          ) with Invalid_argument s -> 
            (
              match tab.(fg i) with
-             | Some(eltg) -> racine > eltg
+             | Some(eltg) -> Int128.inf eltg racine
              | None -> false 
            )
         )
@@ -77,7 +79,7 @@ let supprMin (hp : 'a heapArray) : ('a option * 'a heapArray) =
          match (tab.(fg !i), tab.(fd !i)) with 
          | (Some(eltg), None) -> let tmp = tab.(!i) in tab.(!i) <- tab.(fg !i) ; tab.(fg !i) <- tmp ; i := (fg !i)
          | (Some(eltg), Some(eltd)) -> 
-             if eltg > eltd then let tmp = tab.(!i) in tab.(!i) <- tab.(fd !i) ; tab.(fd !i) <- tmp ; i := (fd !i)
+             if (Int128.inf eltd eltg) then let tmp = tab.(!i) in tab.(!i) <- tab.(fd !i) ; tab.(fd !i) <- tmp ; i := (fd !i)
              else let tmp = tab.(!i) in tab.(!i) <- tab.(fg !i) ; tab.(fg !i) <- tmp ; i := (fg !i)
          | (_,_) -> failwith "Cas impossible"
        ) with Invalid_argument s -> let tmp = tab.(!i) in tab.(!i) <- tab.(fg !i) ; tab.(fg !i) <- tmp ; i := (fg !i);
@@ -157,11 +159,4 @@ let union (h1 : 'a heapArray) (h2 : 'a heapArray) : 'a heapArray =
     i := !i -1
   done ;
   newtab;;
-
-
-
-let t= construction [8;25;-3;13;24;16;145;6;19;2;3;4;7;1] in t;;
-
-let ta = ajout_iteratif [8;25;-3;13;24;16;145;6;19;2;3;4;7;1] in ta;;
-
 

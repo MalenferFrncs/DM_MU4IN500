@@ -166,3 +166,31 @@ let rec construction (l : 'a list) : 'a heapTree =
   
   (aux ln (padding (*formule à trouver*)  lf) [])
      
+
+
+
+  let rec construction (l : 'a list) : 'a heapTree = 
+    let rec aux (l : 'a list) (acc1 : 'a heapTree list ) (acc2 : 'a heapTree list) : 'a heapTree = 
+      match (acc1, l, acc2) with 
+      | ([],[],[]) -> E
+      | ([hp], [], []) -> hp 
+      | ([],[],[hp])-> hp
+      | (fg::fd::tlacc1, hd::tl, _) -> 
+          (
+            match (fg,fd) with 
+            | (E,E) -> (aux tl  tlacc1 (L(hd)::acc2))
+            | (E,_) -> (aux tl  tlacc1 (N ( (rank fd)+ 1, (nbdesc fd)+1, hd, fd, E)::acc2) )
+            | (_,_) -> (aux tl  tlacc1 (N ( (min (rank fg) (rank fd) )+ 1, (nbdesc fg) + (nbdesc fd) +1, hd, fg, fd)::acc2) )
+          )
+      | ( [] , hd::tl, _) ->   (*On a fini un étage, on commence à remplir le suivant*)
+          (aux l  acc2 [])
+  
+    
+    in 
+    let hauteur = log2 (List.length l) in 
+    let taille_etg = two_pow hauteur and
+      padding = empty_dernier_rang (List.length l)
+    in
+    let (lf, ln) = faire_n_feuilles taille_etg l padding in 
+    (aux ln  lf []);;
+  
