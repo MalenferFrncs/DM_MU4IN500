@@ -237,3 +237,78 @@ N (5, 31, 1,
             L 6, 
             L 5))))
   
+
+(*VERSION AVEC DESCENTE*)
+
+           
+let rec bubble_down (hp : 'a heapTree) : 'a heapTree = 
+  match hp with 
+  | E -> hp
+  | L(_) -> hp
+  | N(rk, sz, er, fg, fd) ->
+      match (fg,fd) with 
+      | (E,E) -> hp
+      |(L(eltg), E) -> if eltg < er then N(rk, sz,eltg,L(er),E)
+          else hp
+      | (L(eltg), L(eltd)) -> 
+          if (eltg < er) then 
+            if (eltd < eltg ) then (*On remonte le min des deux fils qui est à droite *)
+              let nfd = bubble_down (L(er)) in N(rk,sz,eltd,fg,nfd)
+            else (*Le min des deux fils est à gauche*)
+              let nfg = bubble_down (L(er)) in N(rk, sz, eltg, nfg, fd)
+          else
+            hp
+              
+      |(N(rkg,szg,eltg,fgfg,fgfd), E) -> if eltg < er then N(rk, sz,eltg,N(rkg,szg,er,fgfg,fgfd),E)
+          else hp 
+      | (N(rkg,szg,eltg,fgfg,fgfd), L(eltd)) -> if (eltg < er) then 
+            if (eltd < eltg ) then (*On remonte le min des deux fils qui est à droite *)
+              let nfd = bubble_down (L(er)) in N(rk,sz,eltd,fg,nfd)
+            else (*Le min des deux fils est à gauche*)
+              let nfg = bubble_down (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
+          else
+            hp
+      |(N(rkg,szg,eltg,fgfg,fgfd), N(rkd,szd,eltd,fdfg,fdfd)) -> 
+          if (eltg < er) then 
+            if (eltd < eltg ) then (*On remonte le min des deux fils qui est à droite *)
+              let nfd = bubble_down (N(rkd,szd, er, fdfg, fdfd)) in N(rk,sz,eltd,fg,nfd)
+            else (*Le min des deux fils est à gauche*)
+              let nfg = bubble_down (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
+          else
+            hp
+      | (_,_) -> N(-1,-1,-1,fg,fd)
+
+           
+          
+
+
+
+(* Calcule le nombre de fils qu'il veut à gauche : récupère la liste, la balance à droite (il sait sait aussi combien il en faut à droite )*) 
+let rec make_tas (li : 'a list) (taille : int) :  ('a heapTree * 'a list)= 
+  if taille = 0 or taille < 0 then (E,li)
+  else if taille = 1 then
+    match li with 
+    | [] -> failwith "invalid argument"
+    | h::tl -> (L(h), tl)
+  else
+    let hauteur = log2 taille in
+    let hauteur_prec = hauteur -1 in
+    let reste = taille - ((two_pow hauteur)-1) in 
+    if reste < ((two_pow hauteur)/2) then
+      let nb_elem_gauche = reste+ (((two_pow (hauteur_prec+1)) -1)/2) in
+      let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) in
+      let (fg,lr) = make_tas li nb_elem_gauche in
+      let (fd,lr2) = make_tas lr nb_elem_droite in
+      match lr2 with 
+      | [] -> failwith "invalid argument"
+      | h::tl ->  ((bubble_down ( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd))), tl) 
+    else
+      let nb_elem_gauche = ((two_pow hauteur)/2) + (((two_pow (hauteur_prec+1)) -1)/2) in
+      let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) + (reste - ((two_pow hauteur)/2)) in
+      let (fg,lr) = make_tas li nb_elem_gauche in
+      let (fd,lr2) = make_tas lr nb_elem_droite in
+      match lr2 with 
+      | [] -> failwith "invalid argument"
+      | h::tl ->( (bubble_down ( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) ) ), tl)
+  
+
