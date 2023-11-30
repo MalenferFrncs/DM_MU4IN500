@@ -312,3 +312,21 @@ let rec make_tas (li : 'a list) (taille : int) :  ('a heapTree * 'a list)=
       | h::tl ->( (bubble_down ( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) ) ), tl)
   
 
+
+let rec heap_to_list (hp : 'a heapTree) (acc : 'a list) : 'a list = 
+  match hp with 
+  | E -> acc
+  | L(elt) -> elt::acc
+  | N(_,_,r,fg,fd) -> let lfg = (heap_to_list fg acc) in let lfd = heap_to_list fd lfg in r::lfd;;
+
+
+
+let union (hp1 : 'a heapTree) (hp2 : 'a heapTree) : 'a heapTree = 
+  match (heap_to_list (N(0,0,-1,hp1, hp2)) []) with 
+  | [] -> E
+  | _::tl -> let (res,_) = (make_tas tl (List.length tl)) in res
+
+        
+let (hp1,_) = make_tas [1;3;5;7;9;11;13;15;17;19] 10 
+and (hp2,_) = make_tas [2;4;6;8;10;12] 6 in union hp1 hp2;;
+  

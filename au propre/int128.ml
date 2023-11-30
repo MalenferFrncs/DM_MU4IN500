@@ -9,6 +9,7 @@ module type Int128 = sig
   val inf : t option -> t option -> bool
   val eg : t -> t -> int
   val of_str : string -> t
+  val to_str : t -> string
 end
 
 module Int128 = struct 
@@ -46,5 +47,16 @@ module Int128 = struct
     let x4 : Int32.t = Int32.of_string(String.cat "0x"(String.sub str 26 8)) in 
     (x1,x2,x3,x4)
 
+ 
+  
+  let to_str (cle : t) : string = 
+    let (x1,x2,x3,x4) = cle in 
+    let (sx1,sx2, sx3, sx4) = (
+      (Printf.sprintf "0x%08lX" x1),
+      (Printf.sprintf "%08lX" x2),
+      (Printf.sprintf "%08lX" x3),
+      (Printf.sprintf "%08lX" x4)
+    ) in String.cat sx1 (String.cat sx2 (String.cat sx3 sx4))
+        
 end
 
