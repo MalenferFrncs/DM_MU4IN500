@@ -1,8 +1,5 @@
 open Int128
 
-
-
-
 (*Ce code est inspiré par la structure proposée par Chris Okasaki dans Purely Functionnal Data Structures
   le rang est défini comme étant la distance vers l'emplacement vide le plus proche*)
 (* Noeud ( rang,ndescendances, elt, fg, fd*)
@@ -161,7 +158,7 @@ let empty_dernier_rang (n : int ) : int =
 
 
 
-let rec bubble_down (hp : heapTree) :  heapTree = 
+let rec bubble_down (hp : heapTree) : heapTree = 
   match hp with 
   | E -> hp
   | L(_) -> hp
@@ -172,21 +169,28 @@ let rec bubble_down (hp : heapTree) :  heapTree =
       else hp
     | (L(eltg), L(eltd)) -> 
       if (Int128.inf eltg er) then 
-        if (Int128.inf eltd eltg ) then (*On remonte le min des deux fils, qui est à droite *)
-          let nfd = bubble_down (L(er)) in N(rk,sz,eltd,fg,nfd)
+        if (Int128.inf eltd eltg ) then (*On remonte le min des deux fils qui est à droite *)
+          N(rk,sz,eltd,fg, L(er))
         else (*Le min des deux fils est à gauche*)
-          let nfg = bubble_down (L(er)) in N(rk, sz, eltg, nfg, fd)
+          N(rk, sz, eltg, L(er), fd)
+      else if (Int128.inf eltd er) then
+        N(rk,sz,eltd,fg,L(er)) 
       else
         hp
 
-    |(N(rkg,szg,eltg,fgfg,fgfd), E) -> if (Int128.inf eltg er) then N(rk, sz,eltg,N(rkg,szg,er,fgfg,fgfd),E)
-      else hp 
+    |(N(rkg,szg,eltg,fgfg,fgfd), E) -> 
+      if (Int128.inf eltg er) then 
+        N(rk, sz,eltg,N(rkg,szg,er,fgfg,fgfd),E)
+      else 
+        hp 
     | (N(rkg,szg,eltg,fgfg,fgfd), L(eltd)) -> 
       if (Int128.inf eltg er) then 
         if (Int128.inf eltd eltg ) then (*On remonte le min des deux fils qui est à droite *)
-          let nfd = bubble_down (L(er)) in N(rk,sz,eltd,fg,nfd)
+          N(rk,sz,eltd,fg,L(er))
         else (*Le min des deux fils est à gauche*)
           let nfg = bubble_down (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
+      else if (Int128.inf eltd er) then
+        N(rk,sz,eltd,fg,L(er))
       else
         hp
     |(N(rkg,szg,eltg,fgfg,fgfd), N(rkd,szd,eltd,fdfg,fdfd)) -> 
@@ -195,9 +199,11 @@ let rec bubble_down (hp : heapTree) :  heapTree =
           let nfd = bubble_down (N(rkd,szd, er, fdfg, fdfd)) in N(rk,sz,eltd,fg,nfd)
         else (*Le min des deux fils est à gauche*)
           let nfg = bubble_down (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
+      else if (Int128.inf eltd er) then
+        let nfd = bubble_down (N(rkd,szd, er, fdfg,fdfd)) in N(rk,sz,eltd,fg,nfd)
       else
         hp
-    | (_,_) -> failwith "Invalid argument"
+    | (_,_) ->  failwith "invalid argument"
 
 
 
@@ -205,8 +211,8 @@ let rec bubble_down (hp : heapTree) :  heapTree =
 
 
 (* Calcule le nombre de fils qu'il veut à gauche : récupère la liste, la balance à droite (il sait sait aussi combien il en faut à droite )*) 
-let rec make_tas (li : Int128.t list) (taille : int) :  ( heapTree * Int128.t list)= 
-  if taille = 0 || taille < 0 then (E,li)
+let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t list)= 
+  if taille = 0 or taille < 0 then (E,li)
   else if taille = 1 then
     match li with 
     | [] -> failwith "invalid argument"
@@ -222,7 +228,7 @@ let rec make_tas (li : Int128.t list) (taille : int) :  ( heapTree * Int128.t li
       let (fd,lr2) = make_tas lr nb_elem_droite in
       match lr2 with 
       | [] -> failwith "invalid argument"
-      | h::tl ->  ((bubble_down ( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd))), tl) 
+      | h::tl -> let hp =  N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) in ( (bubble_down hp), tl)  
     else
       let nb_elem_gauche = ((two_pow hauteur)/2) + (((two_pow (hauteur_prec+1)) -1)/2) in
       let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) + (reste - ((two_pow hauteur)/2)) in
@@ -230,7 +236,10 @@ let rec make_tas (li : Int128.t list) (taille : int) :  ( heapTree * Int128.t li
       let (fd,lr2) = make_tas lr nb_elem_droite in
       match lr2 with 
       | [] -> failwith "invalid argument"
-      | h::tl ->( (bubble_down ( N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) ) ), tl)
+      | h::tl -> let hp =  N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) in ( (bubble_down hp), tl)  
+
+
+
 
 
 let construction (li : Int128.t list) : heapTree = 
@@ -255,37 +264,36 @@ let union (hp1 :  heapTree) (hp2 :  heapTree) :  heapTree =
 let to_dot (nom : string) (hp : heapTree) : unit =
   let f = open_out nom in (*Ouverture du fichier où on met le graphe*)
   (* *)
-  let rec print_noeud (hp : heapTree) (i : int) : int = 
+  let rec print_noeud (hp : heapTree) : unit = 
     match hp with 
     | E -> ()
-    | L(elt) -> Printf.fprintf f "\n%d [shape = box, style = \"rounded,bold\", label = \"%s\",color =seagreen];" i (Int128.to_str elt); (i+1);
+    | L(elt) -> Printf.fprintf f "\n%d [shape = box, style = \"rounded,bold\", label = \"%s\",color =seagreen];" (Obj.magic hp) (Int128.to_str elt);
     | N(_,_,elt,fg, E) -> 
-      Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d;" i (Int128.to_str elt) i (i+1);
-      let i = print_noeud fg (i+1) in i
+      Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d[style=dotted];" (Obj.magic hp) (Int128.to_str elt) (Obj.magic hp) (Obj.magic fg);
+      print_noeud fg 
     | N(_,_,elt,fg,fd) -> 
-      Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d;" i (Int128.to_str elt) i (i+1);
-      let ig = print_noeud fg (i+1) in 
-      Printf.fprintf f "\n %d -> %d" i ig ; 
-      let id = print_noeud fd ig in (id +1)
+      Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d[style=dotted];" (Obj.magic hp) (Int128.to_str elt) (Obj.magic hp) (Obj.magic fg);
+      Printf.fprintf f "\n %d -> %d" (Obj.magic hp) (Obj.magic fd) ; 
+      print_noeud fg ;
+      print_noeud fd 
   in 
   Printf.fprintf f "digraph g {\n";   (*Préambule*) 
-  print_noeud hp 0;
+  print_noeud hp;
   Printf.fprintf f "}\n";
   close_out f;
 ;;
 
-let l = ["0xF0000000000000000000000000000001";
-         "0x00000000000000000000000000000001";
-         "0x00000000000000000000000000000011";
-         "0x00000000000000000000000000010001";
-         "0x00000000000000000000000000000101";
-         "0x00000000000000000000000000001001"] in (construction (List.map Int128.of_str l));; 
 
+let list_of_file (file_name : string) (nb_entier : int ): Int128.t list =
+  let fileIN = open_in file_name in 
+  let rec loop li_128 nb_entier : Int128.t list =
+    if nb_entier = 0 then li_128 
+    else 
+      let str : string = input_line fileIN in 
+      loop ((Int128.of_str str)::li_128) (nb_entier -1 )
+  in
+  loop [] nb_entier
+;; 
 
-         (*PROBLÈMES
-            
-         * trucs bizarres sur le tas fait avec l...
-         * compteur pour dot pas bon
-         *)
 
 

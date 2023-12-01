@@ -41,11 +41,13 @@ module Int128 = struct
   let eg (cle1 : t) (cle2 : t) : bool = (cmp cle1 cle2) = 0
                                         
   let of_str(str:string): t =
-    let x1 : Int32.t = Int32.of_string(String.sub str 0 10) in
-    let x2 : Int32.t = Int32.of_string(String.cat "0x" (String.sub str 10 8)) in
-    let x3 : Int32.t = Int32.of_string(String.cat "0x"(String.sub str 18 8)) in
-    let x4 : Int32.t = Int32.of_string(String.cat "0x"(String.sub str 26 8)) in 
-    (x1,x2,x3,x4)
+  let sz = (String.length str) in 
+      let x1 : Int32.t = Int32.of_string(String.sub str 0 10) in
+      let x2 : Int32.t = Int32.of_string(String.cat "0x" (String.sub str 10 8)) in
+      let x3 : Int32.t = Int32.of_string(String.cat "0x"(String.sub str 18 8)) in
+      let x4 : Int32.t = Int32.of_string(String.cat "0x"(String.sub str 26 (sz - 26)))    (*Traite les cas où il y a moins de 32 nombres hexadécimaux*)
+    in 
+      (x1,x2,x3,x4)
 
  
   

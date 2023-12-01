@@ -1,5 +1,7 @@
 open Int128
 
+
+
 type heapArray = int ref * int ref * (Int128.t option) Array.t;;
 
 let pere (i : int) = (i-1) /2;;
@@ -46,7 +48,7 @@ let rec ajout (hp : heapArray) (elt : Int128.t) : heapArray =
   ) with Invalid_argument s ->(ajout (re_size hp) elt);;
 
 
-
+(*PROBLÈME ICI*)
 let est_non_valide (i : int) (hp : heapArray) : bool = 
   let (ind, _, tab) = hp in 
   if (fg i) > (!ind -1) then false    (*On est au bout du tas*) 
@@ -115,7 +117,7 @@ let bubble_down (hp : heapArray) (p : int) : unit =
         tab.(fg !i) <- tmp ; 
         i := (fg !i)
       | (Some(eltg), Some(eltd)) -> 
-        if eltg > eltd then 
+        if (Int128.inf eltd eltg )then 
           let tmp = tab.(!i) in 
           tab.(!i) <- tab.(fd !i) ; 
           tab.(fd !i) <- tmp ; 
@@ -141,7 +143,7 @@ let bubble_down (hp : heapArray) (p : int) : unit =
 let construction (l : Int128.t list) : heapArray = 
   let lgth = List.length l in 
   let hp = makeHeapArray lgth lgth (Array.of_list (List.map (fun x -> Some(x)) l))
-  and i = ref ((lgth-1) /2)
+  and i = ref (lgth -1)
   in 
   while (!i >= 0) do 
     (bubble_down hp !i);
@@ -174,33 +176,21 @@ let to_dot (nom : string) (hp : heapArray) : unit =
     if (2*i +2 < !sz) then
       match ( tab.(i),tab.(fg i), tab.(fd i)) with 
       | (Some(elt),None,None) -> 
-          Printf.fprintf f "\n%d [shape = box, style = \"rounded,bold\", label = \"%s\",color =seagreen];" i (Int128.to_str elt);
+        Printf.fprintf f "\n%d [shape = box, style = \"rounded,bold\", label = \"%s\",color =seagreen];" i (Int128.to_str elt);
       | (Some(elt), Some(fg),None) ->
-          Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d;" i (Int128.to_str elt) i (2*i+1);
+        Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d[style=dotted];" i (Int128.to_str elt) i (2*i+1);
       | (Some(elt),Some(fg), Some(fd)) ->
-          Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\",color =sienna];\n %d-> %d;" i (Int128.to_str elt) i (2*i +1);
-          Printf.fprintf f "\n %d-> %d;" i (2*i +2);
+        Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\",color =sienna];\n %d-> %d[style=dotted];" i (Int128.to_str elt) i (2*i +1);
+        Printf.fprintf f "\n %d-> %d;" i (2*i +2);
     else if (2*i +1 < !sz) then 
       match ( tab.(i),tab.(fg i)) with 
       | (Some(elt),None) -> 
-          Printf.fprintf f "\n%d [shape = box,style = \"rounded,bold\",label = \"%s\",color =seagreen];" i (Int128.to_str elt);
+        Printf.fprintf f "\n%d [shape = box,style = \"rounded,bold\",label = \"%s\",color =seagreen];" i (Int128.to_str elt);
       | (Some(elt), Some(fg)) ->
-          Printf.fprintf f "\n%d [shape = box, style = bold,label = \"%s\",color =sienna];\n %d-> %d;" i (Int128.to_str elt) i (2*i +1);
+        Printf.fprintf f "\n%d [shape = box, style = bold,label = \"%s\",color =sienna];\n %d-> %d[style=dotted];" i (Int128.to_str elt) i (2*i +1);
     else 
       match tab.(i) with Some(elt) -> Printf.fprintf f  "\n%d [shape = box, style = \"rounded,bold\",label = \"%s\",color =seagreen];" i (Int128.to_str elt) | None -> ()
   done; 
-Printf.fprintf f "}\n";
-close_out f;
+  Printf.fprintf f "}\n";
+  close_out f;
 ;;
-
-
-
-
-let l = ["0xF0000000000000000000000000000001";
-         "0x00000000000000000000000000000001";
-         "0x00000000000000000000000000000011";
-         "0x00000000000000000000000000010001";
-         "0x00000000000000000000000000000101";
-         "0x00000000000000000000000000001001"] in (to_dot "essai.dot" (construction (List.map Int128.of_str l)));; 
-
-
