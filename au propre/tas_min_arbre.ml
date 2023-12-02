@@ -107,7 +107,7 @@ let rec ajout_tasse (h :  heapTree) (x : Int128.t) :   heapTree =
 
 
 
-let rec retrait_tasse (h :  heapTree) :  heapTree * Int128.t = 
+let rec supprMin (h :  heapTree) :  heapTree * Int128.t = 
   match h with 
   | E -> failwith "Empty heap"
   | L(e) -> (E, e)
@@ -119,14 +119,14 @@ let rec retrait_tasse (h :  heapTree) :  heapTree * Int128.t =
   | N(r,d, e, fg, fd) -> 
     if rank fg = rank fd  then 
       if (nbdesc fg > nbdesc fd) then 
-        let (nfg, res) = retrait_tasse fg in (reeq_tas_gauche h nfg res)
+        let (nfg, res) = supprMin fg in (reeq_tas_gauche h nfg res)
       else
-        let (nfd, res) = retrait_tasse fd in (reeq_tas_droite h nfd res)
+        let (nfd, res) = supprMin fd in (reeq_tas_droite h nfd res)
 
     else if elemSurDernierRang fd then (*On vérifie s'il y a des choses à retirer à droite avant d'en retirer à gauche !*)
-      let (nfd, res) = retrait_tasse fd in (reeq_tas_droite h nfd res) 
+      let (nfd, res) = supprMin fd in (reeq_tas_droite h nfd res) 
     else 
-      let (nfg, res) = retrait_tasse fg in (reeq_tas_gauche h nfg res);; 
+      let (nfg, res) = supprMin fg in (reeq_tas_gauche h nfg res);; 
 
 
 
@@ -136,9 +136,10 @@ let rec ajout_feuille_iter (l : Int128.t list) (h :  heapTree) :  heapTree =
   | hd::tl -> ajout_feuille_iter tl (ajout_tasse h hd);;
 
 let rec retrait_feuille_iter (n : int) (h :  heapTree) :  heapTree = 
-  if n = 0 then h else let ( h2, _) = retrait_tasse h in retrait_feuille_iter (n-1) h2;;
+  if n = 0 then h else let ( h2, _) = supprMin h in retrait_feuille_iter (n-1) h2;;
 
-
+let ajout_iteratif (l : Int128.t list) = 
+  ajout_feuille_iter l E;;
 (*Idée : construire par le bas (en faisant les buble down) en utilisant la fin de la récursion pour récupérer les arbres
   construits précédemment pour réassembler avec l'élément de la liste actuelle*)
 
@@ -177,7 +178,6 @@ let rec bubble_down (hp : heapTree) : heapTree =
         N(rk,sz,eltd,fg,L(er)) 
       else
         hp
-
     |(N(rkg,szg,eltg,fgfg,fgfd), E) -> 
       if (Int128.inf eltg er) then 
         N(rk, sz,eltg,N(rkg,szg,er,fgfg,fgfd),E)
@@ -209,10 +209,9 @@ let rec bubble_down (hp : heapTree) : heapTree =
 
 
 
-
 (* Calcule le nombre de fils qu'il veut à gauche : récupère la liste, la balance à droite (il sait sait aussi combien il en faut à droite )*) 
 let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t list)= 
-  if taille = 0 or taille < 0 then (E,li)
+  if taille = 0 || taille < 0 then (E,li)
   else if taille = 1 then
     match li with 
     | [] -> failwith "invalid argument"
@@ -273,7 +272,7 @@ let to_dot (nom : string) (hp : heapTree) : unit =
       print_noeud fg 
     | N(_,_,elt,fg,fd) -> 
       Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\", color =sienna];\n %d -> %d[style=dotted];" (Obj.magic hp) (Int128.to_str elt) (Obj.magic hp) (Obj.magic fg);
-      Printf.fprintf f "\n %d -> %d" (Obj.magic hp) (Obj.magic fd) ; 
+      Printf.fprintf f "\n %d -> %d;" (Obj.magic hp) (Obj.magic fd) ; 
       print_noeud fg ;
       print_noeud fd 
   in 

@@ -48,7 +48,6 @@ let rec ajout (hp : heapArray) (elt : Int128.t) : heapArray =
   ) with Invalid_argument s ->(ajout (re_size hp) elt);;
 
 
-(*PROBLÈME ICI*)
 let est_non_valide (i : int) (hp : heapArray) : bool = 
   let (ind, _, tab) = hp in 
   if (fg i) > (!ind -1) then false    (*On est au bout du tas*) 
@@ -143,7 +142,7 @@ let bubble_down (hp : heapArray) (p : int) : unit =
 let construction (l : Int128.t list) : heapArray = 
   let lgth = List.length l in 
   let hp = makeHeapArray lgth lgth (Array.of_list (List.map (fun x -> Some(x)) l))
-  and i = ref (lgth -1)
+  and i = ref ((lgth -1)/2)
   in 
   while (!i >= 0) do 
     (bubble_down hp !i);
@@ -182,13 +181,15 @@ let to_dot (nom : string) (hp : heapArray) : unit =
       | (Some(elt),Some(fg), Some(fd)) ->
         Printf.fprintf f "\n%d [shape = box, style = bold, label = \"%s\",color =sienna];\n %d-> %d[style=dotted];" i (Int128.to_str elt) i (2*i +1);
         Printf.fprintf f "\n %d-> %d;" i (2*i +2);
+      | (_,_,_) -> failwith "Invalid Argument"
     else if (2*i +1 < !sz) then 
       match ( tab.(i),tab.(fg i)) with 
       | (Some(elt),None) -> 
         Printf.fprintf f "\n%d [shape = box,style = \"rounded,bold\",label = \"%s\",color =seagreen];" i (Int128.to_str elt);
       | (Some(elt), Some(fg)) ->
         Printf.fprintf f "\n%d [shape = box, style = bold,label = \"%s\",color =sienna];\n %d-> %d[style=dotted];" i (Int128.to_str elt) i (2*i +1);
-    else 
+      | (_,_) -> failwith "Invalid Argument"
+      else 
       match tab.(i) with Some(elt) -> Printf.fprintf f  "\n%d [shape = box, style = \"rounded,bold\",label = \"%s\",color =seagreen];" i (Int128.to_str elt) | None -> ()
   done; 
   Printf.fprintf f "}\n";
