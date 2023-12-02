@@ -1,22 +1,36 @@
 
-all : int128.cmo tas_min_tab.cmo tas_min_arbre.cmo test.exe
+all : int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_graphique.exe test_temps.exe
 
 
-test.exe : int128.cmo tas_min_tab.cmo tas_min_arbre.cmo test.cmo
-	ocamlc int128.cmo tas_min_tab.cmo tas_min_arbre.cmo test.cmo -o test.exe
+test_graphique.exe : int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_graphique.cmo
+	ocamlopt int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo  tas_min_arbre.cmo test_graphique.cmo -o test_graphique.exe
 
-test.cmo : 
-	ocamlc -c test.ml
+
+
+test_temps.exe : int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_temps.cmo
+	ocamlopt int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_temps.cmo -o test_temps.exe
+
+test_temps.cmo : 
+	ocamlopt -c test_temps.ml
+
+
+test_graphique.cmo : 
+	ocamlopt -c test_graphique.ml
+
 
 tas_min_tab.cmo : 
-	ocamlc -c tas_min_tab.ml
+	ocamlopt -c tas_min_tab.ml
 
 tas_min_arbre.cmo :
-	ocamlc -c tas_min_arbre.ml
+	ocamlopt -c tas_min_arbre.ml
+
+
+manipulation_fichiers.cmo : 
+	ocamlopt -c manipulation_fichiers.ml
 
 int128.cmo : 
-	ocamlc -c int128.ml
+	ocamlopt -c int128.ml
 
 
 clean : 
-	rm -f *.cmo *.cmi *.exe *.dot *.cmx *.o
+	rm -f *.cmo *.cmi *.exe *.dot *.cmx *.o *.txt *.out
