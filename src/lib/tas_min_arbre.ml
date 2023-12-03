@@ -1,8 +1,7 @@
 open Int128
 
-(*Ce code est inspiré par la structure proposée par Chris Okasaki dans Purely Functionnal Data Structures
-  le rang est défini comme étant la distance vers l'emplacement vide le plus proche*)
-(* Noeud ( rang,ndescendances, elt, fg, fd*)
+
+(*                                   Noeud rang * ndescendances * elt * fg * fd *)
 type  heapTree = E | L of Int128.t | N of int * int *  Int128.t *  heapTree *  heapTree;;
 
 let rank (t:  heapTree) : int=
@@ -159,7 +158,7 @@ let empty_dernier_rang (n : int ) : int =
 
 
 
-let rec bubble_down (hp : heapTree) : heapTree = 
+let rec heapify (hp : heapTree) : heapTree = 
   match hp with 
   | E -> hp
   | L(_) -> hp
@@ -188,7 +187,7 @@ let rec bubble_down (hp : heapTree) : heapTree =
         if (Int128.inf eltd eltg ) then (*On remonte le min des deux fils qui est à droite *)
           N(rk,sz,eltd,fg,L(er))
         else (*Le min des deux fils est à gauche*)
-          let nfg = bubble_down (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
+          let nfg = heapify (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
       else if (Int128.inf eltd er) then
         N(rk,sz,eltd,fg,L(er))
       else
@@ -196,11 +195,11 @@ let rec bubble_down (hp : heapTree) : heapTree =
     |(N(rkg,szg,eltg,fgfg,fgfd), N(rkd,szd,eltd,fdfg,fdfd)) -> 
       if (Int128.inf eltg er) then 
         if (Int128.inf eltd eltg ) then (*On remonte le min des deux fils qui est à droite *)
-          let nfd = bubble_down (N(rkd,szd, er, fdfg, fdfd)) in N(rk,sz,eltd,fg,nfd)
+          let nfd = heapify (N(rkd,szd, er, fdfg, fdfd)) in N(rk,sz,eltd,fg,nfd)
         else (*Le min des deux fils est à gauche*)
-          let nfg = bubble_down (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
+          let nfg = heapify (N(rkg,szg, er, fgfg,fgfd)) in N(rk, sz, eltg, nfg, fd)
       else if (Int128.inf eltd er) then
-        let nfd = bubble_down (N(rkd,szd, er, fdfg,fdfd)) in N(rk,sz,eltd,fg,nfd)
+        let nfd = heapify (N(rkd,szd, er, fdfg,fdfd)) in N(rk,sz,eltd,fg,nfd)
       else
         hp
     | (_,_) ->  failwith "invalid argument"
@@ -227,7 +226,7 @@ let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t lis
       let (fd,lr2) = make_tas lr nb_elem_droite in
       match lr2 with 
       | [] -> failwith "invalid argument"
-      | h::tl -> let hp =  N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) in ( (bubble_down hp), tl)  
+      | h::tl -> let hp =  N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) in ( (heapify hp), tl)  
     else
       let nb_elem_gauche = ((two_pow hauteur)/2) + (((two_pow (hauteur_prec+1)) -1)/2) in
       let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) + (reste - ((two_pow hauteur)/2)) in
@@ -235,7 +234,7 @@ let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t lis
       let (fd,lr2) = make_tas lr nb_elem_droite in
       match lr2 with 
       | [] -> failwith "invalid argument"
-      | h::tl -> let hp =  N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) in ( (bubble_down hp), tl)  
+      | h::tl -> let hp =  N( (min (rank fg) (rank fd)) +1, taille -1, h, fg, fd) in ( (heapify hp), tl)  
 
 
 

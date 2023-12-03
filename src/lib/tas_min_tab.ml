@@ -1,7 +1,7 @@
 open Int128
 
 
-
+(*indice dernier élément * taille du tableau * tableau*)
 type heapArray = int ref * int ref * (Int128.t option) Array.t;;
 
 let pere (i : int) = (i-1) /2;;
@@ -105,7 +105,7 @@ let ajout_iteratif (l : Int128.t list) : heapArray =
 
 
 
-let bubble_down (hp : heapArray) (p : int) : unit = 
+let heapify (hp : heapArray) (p : int) : unit = 
   let (ind,sz, tab) = hp and i = ref p in
   while (est_non_valide !i hp) do
     try(
@@ -145,7 +145,7 @@ let construction (l : Int128.t list) : heapArray =
   and i = ref ((lgth -1)/2)
   in 
   while (!i >= 0) do 
-    (bubble_down hp !i);
+    (heapify hp !i);
     i := !i -1
   done;
   hp;;
@@ -156,7 +156,7 @@ let union (h1 : heapArray) (h2 : heapArray) : heapArray =
   let newtab = (ref (!ind1+ !ind2), ref (!sz1 + !sz2), Array.append tab1 tab2) in
   let i = ref ( ((size newtab) -1)/2 ) in
   while (!i >= 0) do
-    bubble_down newtab !i ;
+    heapify newtab !i ;
     i := !i -1
   done ;
   newtab;;
