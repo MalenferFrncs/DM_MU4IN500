@@ -1,6 +1,8 @@
 open Int128
 open Tas_min_tab
 open Tas_min_arbre
+open File_binomiale
+open Arbre_234
 open Manipulation_fichiers;;
 
 let l1 = Int128.list_of_file "../cles_alea/jeu_1_nb_cles_1000.txt" 31 in 
@@ -20,6 +22,10 @@ let (tas, min) = (Tas_min_arbre.supprMin ajout) in Tas_min_arbre.to_dot "tas_arb
 
 let l3 = Int128.list_of_file "../cles_alea/jeu_1_nb_cles_1000.txt" 15 in 
 (File_binomiale.to_dot "file_binomiale_cons.dot" (File_binomiale.construction l3));
+;;
+
+let l4 = Int128.list_of_file "../cles_alea/jeu_1_nb_cles_1000.txt" 15 in 
+(Arbre_234.to_dot "arbre_234_ajout.dot" (Arbre_234.ajout_iteratif l4 Empty));
 ;;
 
 
