@@ -15,7 +15,7 @@ let time_of (f : 'a -> 'b) (arg : 'a): float =
 let temps_moy (nb_cles : int) (nb_jeu : int) (f : 'a ->'b) : float = 
   let sum = ref 0.0 in
   for i = 1 to nb_jeu do
-    let l = list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles
+    let l = Int128.list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles
     in sum := !sum +. (time_of f l)
   done;
   !sum /. Int.to_float nb_jeu;;
@@ -38,10 +38,10 @@ let temps_moy_union (nb_cles : int) (nb_jeu : int) (construction : Int128.t list
   for i = 1 to nb_jeu do 
     for j = 1 to nb_jeu do 
       if i != j then 
-        let tas1 = (construction (list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles))
-        and tas2 = (construction (list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" j nb_cles) nb_cles))
+        let tas1 = (construction (Int128.list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles))
+        and tas2 = (construction (Int128.list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" j nb_cles) nb_cles))
         in 
-        sum := !sum +. (time_of (f tas1) tas2)
+        sum := !sum +. (time_of (f tas1) tas2);
     done;
   done ; 
   !sum /. Int.to_float (nb_jeu * (nb_jeu -1))

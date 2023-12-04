@@ -253,8 +253,8 @@ let rec heap_to_list (hp :  heapTree) (acc : Int128.t list) : Int128.t list =
 
 let union (hp1 :  heapTree) (hp2 :  heapTree) :  heapTree = 
   match (heap_to_list (N(0,0,(0l,0l,0l,0l),hp1, hp2)) []) with 
-  | E -> failwith "cas impossible"
-  | [N(0,0,(0l,0l,0l,0l))] -> E
+  | [] -> failwith "cas impossible"
+  | [(0l,0l,0l,0l)] -> E
   | _::tl -> construction tl
 
 
@@ -283,16 +283,6 @@ let to_dot (nom : string) (hp : heapTree) : unit =
 ;;
 
 
-let list_of_file (file_name : string) (nb_entier : int ): Int128.t list =
-  let fileIN = open_in file_name in 
-  let rec loop li_128 nb_entier : Int128.t list =
-    if nb_entier = 0 then li_128 
-    else 
-      let str : string = input_line fileIN in 
-      loop ((Int128.of_str str)::li_128) (nb_entier -1 )
-  in
-  loop [] nb_entier
-;; 
 
 
 

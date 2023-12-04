@@ -57,7 +57,7 @@ let list_of_file (file_name : string) (nb_entier : int ): t list =
       let str : string = input_line fileIN in 
       loop ((of_str str)::li_128) (nb_entier -1 )
   in
-  loop [] nb_entier
+  let res = loop [] nb_entier in close_in fileIN ; res
 ;; 
 
 
