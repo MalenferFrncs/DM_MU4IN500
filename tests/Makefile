@@ -1,36 +1,17 @@
 
-all : int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_graphique.exe test_temps.exe
+all : int128.ml manipulation_fichiers.ml tas_min_tab.ml tas_min_arbre.ml test_graphique.exe test_temps.exe
 
 
-test_graphique.exe : int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_graphique.cmo
-	ocamlopt int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo  tas_min_arbre.cmo test_graphique.cmo -o test_graphique.exe
+test_graphique.exe : ../src/lib/int128.ml ../src/lib/manipulation_fichiers.ml ../src/lib/tas_min_tab.ml  ../src/lib/tas_min_arbre.ml ../src/lib/arbre_234.ml ../src/lib/file_binomiale.ml test_graphique.ml
+	ocamlopt -I ../src/lib ../src/lib/int128.ml ../src/lib/manipulation_fichiers.ml ../src/lib/tas_min_tab.ml  ../src/lib/tas_min_arbre.ml ../src/lib/arbre_234.ml ../src/lib/file_binomiale.ml test_graphique.ml -o test_graphique.exe
 
 
-
-test_temps.exe : int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_temps.cmo
-	ocamlopt int128.cmo manipulation_fichiers.cmo tas_min_tab.cmo tas_min_arbre.cmo test_temps.cmo -o test_temps.exe
-
-test_temps.cmo : 
-	ocamlopt -c test_temps.ml
-
-
-test_graphique.cmo : 
-	ocamlopt -c test_graphique.ml
-
-
-tas_min_tab.cmo : 
-	ocamlopt -c tas_min_tab.ml
-
-tas_min_arbre.cmo :
-	ocamlopt -c tas_min_arbre.ml
-
-
-manipulation_fichiers.cmo : 
-	ocamlopt -c manipulation_fichiers.ml
-
-int128.cmo : 
-	ocamlopt -c int128.ml
+test_temps.exe : ../src/lib/int128.ml ../src/lib/manipulation_fichiers.ml ../src/lib/tas_min_tab.ml  ../src/lib/tas_min_arbre.ml ../src/lib/arbre_234.ml ../src/lib/file_binomiale.ml test_temps.ml
+	ocamlopt -I ../src/lib ../src/lib/int128.ml ../src/lib/manipulation_fichiers.ml ../src/lib/tas_min_tab.ml  ../src/lib/tas_min_arbre.ml ../src/lib/arbre_234.ml ../src/lib/file_binomiale.ml test_temps.ml -o test_temps.exe
 
 
 clean : 
 	rm -f *.cmo *.cmi *.exe *.dot *.cmx *.o *.txt *.out
+
+
+

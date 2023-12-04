@@ -253,8 +253,9 @@ let rec heap_to_list (hp :  heapTree) (acc : Int128.t list) : Int128.t list =
 
 let union (hp1 :  heapTree) (hp2 :  heapTree) :  heapTree = 
   match (heap_to_list (N(0,0,(0l,0l,0l,0l),hp1, hp2)) []) with 
-  | [] -> E
-  | _::tl -> let (res,_) = (make_tas tl (List.length tl)) in res
+  | E -> failwith "cas impossible"
+  | [N(0,0,(0l,0l,0l,0l))] -> E
+  | _::tl -> construction tl
 
 
 

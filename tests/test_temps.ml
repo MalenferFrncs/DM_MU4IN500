@@ -15,7 +15,7 @@ let time_of (f : 'a -> 'b) (arg : 'a): float =
 let temps_moy (nb_cles : int) (nb_jeu : int) (f : 'a ->'b) : float = 
   let sum = ref 0.0 in
   for i = 1 to nb_jeu do
-    let l = list_of_file (Printf.sprintf "../cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles
+    let l = list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles
     in sum := !sum +. (time_of f l)
   done;
   !sum /. Int.to_float nb_jeu;;
@@ -38,8 +38,8 @@ let temps_moy_union (nb_cles : int) (nb_jeu : int) (construction : Int128.t list
   for i = 1 to nb_jeu do 
     for j = 1 to nb_jeu do 
       if i != j then 
-        let tas1 = (construction (list_of_file (Printf.sprintf "../cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles))
-        and tas2 = (construction (list_of_file (Printf.sprintf "../cles_alea/jeu_%d_nb_cles_%d.txt" j nb_cles) nb_cles))
+        let tas1 = (construction (list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" i nb_cles) nb_cles))
+        and tas2 = (construction (list_of_file (Printf.sprintf "../src/jeux_de_données/cles_alea/jeu_%d_nb_cles_%d.txt" j nb_cles) nb_cles))
         in 
         sum := !sum +. (time_of (f tas1) tas2)
     done;
@@ -48,6 +48,7 @@ let temps_moy_union (nb_cles : int) (nb_jeu : int) (construction : Int128.t list
 ;;
 
 let complexite_temporelle_union (construction : Int128.t list -> 'a) (f1 : 'a -> 'a -> 'a) : (int*float) list = 
+  
   let rec aux (liste_echantillons : int list) (acc : (int*float) list): (int*float) list = 
     match liste_echantillons with 
     | [] -> acc
@@ -60,6 +61,7 @@ let complexite_temporelle_union (construction : Int128.t list -> 'a) (f1 : 'a ->
 
 
 Manipulation_fichiers.write_complexite "complexite_cons_file.txt"  (complexite_temporelle File_binomiale.construction);;
+Manipulation_fichiers.write_complexite "complexite_union_file.txt"  (complexite_temporelle_union  File_binomiale.construction File_binomiale.unionFile);;
 
 Manipulation_fichiers.write_complexite "complexite_ajout_arbre.txt"  (complexite_temporelle Tas_min_arbre.ajout_iteratif);;
 Manipulation_fichiers.write_complexite "complexite_ajout_tab.txt"  (complexite_temporelle Tas_min_tab.ajout_iteratif);;

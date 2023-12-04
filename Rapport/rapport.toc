@@ -1,0 +1,27 @@
+\babel@toc {french}{}\relax 
+\contentsline {section}{\numberline {1}Échauffement}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Représentation d'une clé 128 bits}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Le prédicat inf}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Le prédicat eg}{2}{subsection.1.3}%
+\contentsline {section}{\numberline {2}Structure 1 : Tas priorité min}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Implémenter les 3 fonctions fondamentales d'un tas min}{3}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Tas min sous forme de tableau}{3}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Tas min sous forme d'arborescence}{4}{subsubsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.2}Construction}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Implémentation par tableau}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Implémentation par arborescence}{5}{subsubsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.3}Union}{5}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Implémentation par tableau}{5}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}Implémentation par arbre}{6}{subsubsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.4}Preuves des différentes complexités}{6}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Vérification graphique des complexités temporelles}{6}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Vérification graphique pour l'union}{6}{subsection.2.6}%
+\contentsline {section}{\numberline {3}File binomiale}{6}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Primitives et structure}{6}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Fonctions fondamentales}{6}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Vérification graphique de la complexité de construction}{6}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Vérification graphique de la complexité de union}{6}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Hachage}{6}{section.4}%
+\contentsline {section}{\numberline {5}Arbre Binaire de Recherche}{6}{section.5}%
+\contentsline {section}{\numberline {6}Étude expérimentale}{6}{section.6}%
+\contentsline {section}{Bibliographie}{7}{section.6}%
