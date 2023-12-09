@@ -2,7 +2,7 @@
 
 reset
 set terminal png
-set output "../Images/courbes/temps_construction_shakespeare.png"
+set output "../Images/courbes_shakespeare/temps_construction_shakespeare.png"
 set boxwidth 0.5
 set style fill solid 0.20 border 
 set grid ytics linestyle 0
@@ -15,7 +15,7 @@ plot 'construction_shakespeare.txt' using 2:xtic(1) title "construction"
 
 reset
 set terminal png
-set output "../Images/courbes/temps_suppr_shakespeare.png"
+set output "../Images/courbes_shakespeare/temps_suppr_shakespeare.png"
 set boxwidth 0.5
 set style fill solid 0.20 border 
 set grid ytics linestyle 0
@@ -27,7 +27,7 @@ plot 'suppr_Min_shakespeare.txt' using 2:xtic(1) title "Suppression du minimum"
 
 reset
 set terminal png
-set output "../Images/courbes/temps_ajout_shakespeare.png"
+set output "../Images/courbes_shakespeare/temps_ajout_shakespeare.png"
 set boxwidth 0.5
 set style fill solid 0.20 border 
 set grid ytics linestyle 0
@@ -39,7 +39,7 @@ plot 'ajout_shakespeare.txt' using 2:xtic(1) title "Ajout de l'élément minimum
 
 reset
 set terminal png
-set output "../Images/courbes/temps_union_shakespeare.png"
+set output "../Images/courbes_shakespeare/temps_union_shakespeare.png"
 set boxwidth 0.5
 set style fill solid 0.20 border 
 set grid ytics linestyle 0

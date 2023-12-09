@@ -63,7 +63,7 @@ let complexite_temporelle_union (construction : Int128.t list -> 'a) (f1 : 'a ->
 Manipulation_fichiers.write_complexite "complexite_cons_file.txt"  (complexite_temporelle File_binomiale.construction);;
 Manipulation_fichiers.write_complexite "complexite_union_file.txt"  (complexite_temporelle_union  File_binomiale.construction File_binomiale.unionFile);;
 
-(*
+
 Manipulation_fichiers.write_complexite "complexite_ajout_arbre.txt"  (complexite_temporelle Tas_min_arbre.ajout_iteratif);;
 Manipulation_fichiers.write_complexite "complexite_ajout_tab.txt"  (complexite_temporelle Tas_min_tab.ajout_iteratif);;
 Manipulation_fichiers.write_complexite "complexite_cons_arbre.txt"  (complexite_temporelle Tas_min_arbre.construction);;
@@ -71,7 +71,7 @@ Manipulation_fichiers.write_complexite "complexite_cons_tab.txt"  (complexite_te
 Manipulation_fichiers.write_complexite "complexite_union_arbre.txt"  (complexite_temporelle_union Tas_min_arbre.construction Tas_min_arbre.union);;
 Manipulation_fichiers.write_complexite "complexite_union_tab.txt"  (complexite_temporelle_union Tas_min_tab.construction Tas_min_tab.union);;
 
-*)
+
 
 
 
