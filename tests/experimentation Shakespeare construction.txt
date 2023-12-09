@@ -1,0 +1,3 @@
+arbre	0.0043
+tableau	0.0053
+file	0.0069

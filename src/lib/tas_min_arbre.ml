@@ -82,7 +82,7 @@ let reeq_tas_gauche (t : heapTree) (nfg : heapTree) (res : Int128.t) : heapTree 
 
 
 
-let rec ajout_tasse (h :  heapTree) (x : Int128.t) :   heapTree = 
+let rec ajout (h :  heapTree) (x : Int128.t) :   heapTree = 
   match h with 
   | E -> L(x)
   | L(e) -> if (Int128.inf e x) then  N(1, 1,e, L(x),E) else N(1, 1,x, L(e),E) 
@@ -95,14 +95,14 @@ let rec ajout_tasse (h :  heapTree) (x : Int128.t) :   heapTree =
     let rfg = (rank fg) and rfd = rank fd in 
     if rfg > rfd then (*On ne peut plus ajouter à gauche sans deséquilibrer*)
       if (Int128.inf e x) then 
-        let nfd = ajout_tasse fd x in N(( min rfg (rank nfd) )+1,d+1,e,fg,nfd)
+        let nfd = ajout fd x in N(( min rfg (rank nfd) )+1,d+1,e,fg,nfd)
       else 
-        let nfd = ajout_tasse fd e in N(( min rfg (rank nfd) )+1,d+1,x,fg,nfd) (*x < e, puisque e < elt fg, x < elt fg, la propriété du tas est conservée*)
+        let nfd = ajout fd e in N(( min rfg (rank nfd) )+1,d+1,x,fg,nfd) (*x < e, puisque e < elt fg, x < elt fg, la propriété du tas est conservée*)
     else 
     if (Int128.inf e x) then 
-      let nfg = ajout_tasse fg x in N (( min rfd (rank nfg) )+1,d+1, e, nfg, fd)
+      let nfg = ajout fg x in N (( min rfd (rank nfg) )+1,d+1, e, nfg, fd)
     else 
-      let nfg = ajout_tasse fg e in N (( min rfd (rank nfg) )+1,d+1, x, nfg, fd)
+      let nfg = ajout fg e in N (( min rfd (rank nfg) )+1,d+1, x, nfg, fd)
 
 
 
@@ -132,7 +132,7 @@ let rec supprMin (h :  heapTree) :  heapTree * Int128.t =
 let rec ajout_feuille_iter (l : Int128.t list) (h :  heapTree) :  heapTree = 
   match l with 
   | [] -> h
-  | hd::tl -> ajout_feuille_iter tl (ajout_tasse h hd);;
+  | hd::tl -> ajout_feuille_iter tl (ajout h hd);;
 
 let rec retrait_feuille_iter (n : int) (h :  heapTree) :  heapTree = 
   if n = 0 then h else let ( h2, _) = supprMin h in retrait_feuille_iter (n-1) h2;;

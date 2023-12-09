@@ -170,7 +170,7 @@ let suppr_min (f:file_b) : file_b =
 
 (* debut ajout *)
 
-let ajout_file (x:Int128.t) (f:file_b) : file_b =
+let ajout (x:Int128.t) (f:file_b) : file_b =
   let tx : tournois_b = Racine(0,x,Empty::[]) in
   let fx : file_b = file tx in
   unionFile f fx 
@@ -185,7 +185,7 @@ let rec construction (liste_cles : Int128.t list): file_b =
   let rec loop (liste_cles : Int128.t list)  (file_bino : file_b) : file_b = 
     match liste_cles with 
     | [] -> file_bino
-    | hd::tl -> (loop tl (ajout_file hd file_bino))
+    | hd::tl -> (loop tl (ajout hd file_bino))
   in
   loop liste_cles Empty;;
 

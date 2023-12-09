@@ -44,6 +44,7 @@ let rec recherche (cle : Int128.t) (t : arbre234) : bool =
 
 exception Eclatement of (Int128.t * (arbre234) * (arbre234)) ;;
 
+(*On suppose que cle n'est pas dans t*)
 let ajout (cle : Int128.t) (t : arbre234) : arbre234 = 
   let rec insertion234 (cle : Int128.t) (t : arbre234) : arbre234 = 
     if (est_dans_noeud cle t) then t 
