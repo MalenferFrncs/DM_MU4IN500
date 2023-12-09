@@ -9,7 +9,7 @@
 \usepackage{graphicx}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
 \usepackage{ccaption}
-\author{Javaid Mohammad-Habib, Carbonneau Danaël}
+\author{Malenfer François, Carbonneau Danaël}
 
 \usepackage[Glenn]{fncychap}
 
@@ -241,7 +241,6 @@ Un algorithme permettant de construire un tas en temps constant a été présent
 \STATE heapify (k)
 	
 \ENDFOR
-\RETURN Distances[n][m]
 \end{algorithmic}
 \end{algorithm}
 
@@ -259,6 +258,8 @@ Pour l'implémentation par tableau, il nous suffit de convertir la liste en tabl
 Pour l'arborescence, bien que les appels à heapify soient assez simples à situer (dès qu'on créé un nouvel arbre tassé à gauche, on le heapify, ce qui forme alors bien un tas, qu'on peut retourner), la question de créer un arbre parfait tassé à gauche depuis une liste est moins évidente.
 
 Pour résoudre ce problème, nous utilisons le fait qu'à un nombre d'éléments donné, il n'y a qu'une seule forme d'arbre parfait tassé à gauche possible : il nous est possible donc, de savoir, pour un nœud donné, en fonction de la taille qui a été passée en argument, de savoir la taille de sa descendance droite et de sa descendance gauche : on peut alors faire deux appels récursifs demandant cette taille de tas pour obtenir deux fils aux tailles souhaitées : de là, il nous suffit de les combiner avec un nouvel élément tiré de la liste passée en argument, puis de faire appel à heapify sur notre nouveau nœud, pour obtenir un tas minimal de la taille souhaitée.
+
+La fonction construction consiste alors à récupérer la taille de la liste, puis faire un appel à \textit{make\_tas}.
 
 \begin{lstlisting}
 let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t list)= 
@@ -290,7 +291,7 @@ let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t lis
 
 \subsection{Union}
 
-Pour réaliser l'union en temps lineaire de deux tas, il suffit de mettre tous leurs éléments dans une même liste (ou un même tableau), puis de faire appel à construction sur cette liste nouvellement créée.
+Pour réaliser l'union en temps linéaire de deux tas, il suffit de mettre tous leurs éléments dans une même liste (ou un même tableau), puis de faire appel à construction sur cette liste nouvellement créée.
 
 \subsubsection{Implémentation par tableau}
 
@@ -304,15 +305,343 @@ Pour pouvoir utiliser notre fonction construction, il nous faut construire une l
 
 \subsection{Preuves des différentes complexités}
 
+\subsubsection{Ajout}
+
+\subparagraph{Tas sous forme de tableau}
+
+En maintenant un indice contenant la dernière case où il est possible d'ajouter, en supposant que le tableau a la bonne capacité, on parvient à faire l'ajout en $O(log (n) ) $ : insérer un élément se fait en $O(1)$, puis on remonte, au pire cas, la hauteur du tas, ce qui se fait en $O(log (n))$.
+
+\subparagraph{Tas sous forme d'arborescence}
+
+À l'aide du système d'aiguillage permis par le fait de retenir le rang (dont les opérations de vérification se font en temps constant), on parcourt notre tas de haut en bas avec à chaque fois un appel récursif vers le bon fils où se fera l'ajout. Après cet appel récursif, on reconstruit un nœud en faisant les rééquilibrages au fur et à mesure. Notre complexité en nombre de comparaisons se fait donc bien en temps $O(log (n))$. 
+
+
+\subsubsection{SupprMin}
+
+\subparagraph{Tas sous forme de tableau}
+
+De même que pour l'ajout, on fait des opérations en O(1) sur le tableau pour le retrait, puis le rééquilibrage se fait en parcourant une branche du tas, donc en $O(log (n))$.
+\subparagraph{Tas sous forme d'arborescence}
+
+
+À l'aide de notre système d'aiguillage, cette fois-ci basé sur le rang et le nombre de descendants (dont les opérations de vérification se font en temps constant), on parcourt notre tas de haut en bas avec à chaque fois un appel récursif vers le bon fils où se fera la suppression. Après cet appel récursif, on reconstruit un nœud en faisant les rééquilibrages au fur et à mesure. Notre complexité en nombre de comparaisons se fait donc bien en temps $O(log (n))$. 
+
+
+
+\subsubsection{Ajouts itératifs}
+
+Dans nos deux implémentations, on itère sur une liste de taille n en faisant n ajouts chacun en $O( log (n))$, on a bien une complexité théorique majorée par $O(n log(n))$.
+\newpage
+\subsubsection{Construction}
+
+Dans l'article \textit{An Average Case Analysis of Floyd's Algorithm to Construct Heaps}\cite{Doberkat}, Ernst E. Doberkat nous présente une analyse de la complexité de l'algorithme de Floyd, sur laquelle nous allons nous baser.
+
+Posons $h$ la hauteur du tas, c'est à dire qu'il contient des niveaux allant de $0$ à $h - 1$. Dans le pire des cas, chaque opération bubble down (effectuée une fois pour chaque nœud) va se faire sur la distance du nœud aux feuilles, c'est à dire $h - 1 - h(x)$, où $h(x)$ est la hauteur relative du nœud x par rapport à la racine.
+
+Le coût total pour tous les nœuds est donc majoré par 
+
+\begin{align}
+C &= \sum_{i = 0}^{h-1} 2^i (h - 1 - i)\\
+&=  \sum_{j = 0}^{h-1} 2^{h-1-j} j\\
+&= 2^{h-1} \sum_{j=0}^{h-1} 2^{-j} j\\
+&= 2^{h-1} \sum_{j=0}^{h-1} j \frac{1}{2^j} \\
+&= O(2^{h-1})\\
+&= O(n)
+\end{align}
+
+\begin{enumerate}[label=(\arabic*)]
+\item $2^i$ est le nombre de nœuds à l'étage i dans le tas, on le multiplie par le coût maximum pour un nœud de cet étage
+\item On pose $j = h-1 -i \iff i = h-1 -j$
+\item On sort $2^{h-1}$ de la somme
+\item $2^{-j} = \frac{1}{2^j}$, propriété des puissances
+\item la série $\sum_{i = 0}^{\infty} \frac{i}{2^i}$ converge, elle est donc en $O(1)$
+\item $2^{h-1}$ est le nombre de nœuds maximal sur les feuilles du tas, il est donc inférieur ou égal à n, on peut majorer par n.
+\end{enumerate}
+
+Ainsi, en étant capables de construire une structure d'arbre parfait tassé à gauche en temps linéaire, il est possible d'avoir un algorithme de construction qui soit bien en $O(n)$.
+
+\subparagraph{Tas sous forme de tableau}
+
+L'implémentation sous forme de tableau de cet algorithme suit plutôt bien son pseudo code. Il suffit de transformer la liste en un tableau, la primitive OCaml nous réalisant cette opération en un temps linéaire, on a bien notre algorithme implémenté en $O(n)$
+
+\subparagraph{Tas sous forme d'arborescence}
+
+La manière de parcourir la structure choisie pour implémenter construction respecte d'une part le fait de ne visiter qu'une fois chaque nœud (hors \textit{heapify}), et d'une autre de faire de bas en haut les appels à \textit{heapify} (on fait un appel par nœud en les crééant en remontant la pile des appels récursifs, il s'agit bien d'un parcours du bas vers le haut). Étant donné que récupérer la taille d'une liste se fait également en $O(n)$, notre algorithme respecte bien cette complexité.
+
+
+
+\subsubsection{Union}
+
+L'algorithme d'Union consiste simplement en l'utilisation de l'algorithme de construction sur un tableau sur une liste de taille $n+m$. La complexité est donc bien en $O(n+m)$
+\subparagraph{Tas sous forme de tableau}
+Pour un tas sous forme de tableau, la fonction apppend, en $O(n+m)$ permet d'obtenir un nouveau arbre binaire parfait tassé à gauche sur lequel appliquer notre algorithme lui-même en $O(n+m)$, la complexité de l'union par tas sous forme de tableau est donc bien en $O(n+m)$
+
+\subparagraph{Tas sous forme d'arborescence}
+
+Pour un tas sous forme d'arborescence, notre fonction \textit{heap\_to\_list} ne visite qu'une fois chaque nœud, et ne fait que des ajouts en tête grâce aux accumulateurs, à l'aide du "nœud fantome" servant à relier les deux arbres, on construit bien une liste de clés à partir de deux tas en $O(n+m)$, par la suite, on appelle dessus construction, toujours en $O(n+m)$, la complexité de l'union par tas sous forme d'arborescence est donc bien $O(n+m)$.
+
 
 \subsection{Vérification graphique des complexités temporelles}
+Pour ces vérifications graphiques, nous avons choisi comme mesure le temps système (en secondes). Chaque fonction testée l'est grâce à la fonction \textit{time\_of} qui mesure le temps d'une fonction appliquée à un paramètre, tout deux passés en argument.
+
+\begin{lstlisting}
+let time_of (f : 'a -> 'b) (arg : 'a): float =
+  let debut = Sys.time() in
+  let _ = f arg in
+  let fin = Sys.time() in
+  fin -. debut
+\end{lstlisting}
+
+Nous avons compilé notre code avec \textit{ocamlopt} pour réaliser ces tests. Les jeux de données se trouvent dans \textit{src/jeux\_de\_données} et sont ceux fournis par le sujet. Les courbes sont tracées à l'aide de gnuplot, les commandes se trouvent dans \textit{tests/graphiques.gnu}.
+
+La taille de nos tas varie ainsi de 1000 à 200000 clés (sous forme d'entiers 128 bits).
+
+Afin de vérifier que nos temps mesurés correspondent à nos complexités théoriques, nous avons utilisé l'outil fit fourni par gnuplot, qui permet d'adapter les coefficients d'une fonction afin de la faire approximer la courbe obtenue avec nos mesures expérimentales. Des écarts peuvent être à noter et son explicables par l'aléa dans nos mesures, mais aussi le fait que nous faisons pour chaque taille une moyenne sur 5 itérations.
+
+\subsection{\textit{ajouts\_iteratifs}}
+
+La complexité théorique de l'ajout itératif étant en $O(n log n)$, nous avons utilisé la fonction suivante pour l'ajuster à nos courbes avec les paramètres a,b,c et m : 
+
+$$
+l(x) = (a x +b) \times log (mx +c)
+$$
+
+\subsubsection{Tas implémenté avec un tableau}
+
+Nous obtenons la courbe et les paramètres pour la régression suivants : 
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & a & b & c & m\\
+\hline
+coefficient & 5.69199e-08 & 0.00010527 & 0.999611 & 0.000287488 \\
+Erreur asymptotique & +/- 2.464e-08 & +/- 0.001292 & +/- 5.662  & +/- 0.0006119\\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/regression_ajout_iteratif_tab.png}
+\caption{Mesure du temps pris par l'ajout itératif, tas sous forme de tableau}
+\end{figure}
+
+En observant la correspondance, il apparaît que l'ajout itératif sur le tableau semble être en $O(n log n)$.
+
+
+\subsubsection{Tas implémenté avec une arborescence}
+
+Nous obtenons la courbe et les paramètres pour la régression suivants : 
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+ & a & b & c & m\\
+\hline
+coefficient & 1.37702e-08 & 
+9.99416e-05 & 
+-3862.02 & 
+1.13792e+06 \\
+Erreur asymptotique & +/- 5.828e-08 & +/- 0.0006326 & +/- 4.284e+10   & +/- 1.275e+08\\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/regression_ajout_iteratif_arbre.png}
+\caption{Mesure du temps pris par l'ajout itératif, tas sous forme d'arbre}
+\end{figure}
+
+Notons ici que la régression linéaire est moins alignée avec nos différents points, mais la correspondance peut néanmoins nous faire considérer que l'ajout itératif implémenté par arborescence semble être en $O(n log n)$.
+
+
+
+
+\subsection{\textit{construction}}
+
+La complexité théorique de la fonction de construction, comme montré précédemment, est en $O(n)$, nous avons donc utilisé la fonction suivante pour l'ajuster à nos courbes avec les paramètres m et b : 
+
+$$
+f(x) = mx +b
+$$
+
+\subsubsection{Tas implémenté avec un tableau}
+
+Nous obtenons la courbe et les paramètres pour la régression suivants : 
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & m & b \\
+\hline
+coefficient & 3.38282e-07 & -0.00194051 \\
+Erreur asymptotique & +/- 1.284e-08 & +/- 0.001147  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_cons_tab_regression.png}
+\caption{Mesure du temps pris par la construction, tas sous forme de tableau}
+\end{figure}
+
+En observant la correspondance, il apparaît que la construction avec des tas implémentés par un tableau semble être en $O(n)$.
+
+
+\subsubsection{Tas implémenté avec une arborescence}
+
+Nous obtenons la courbe et les paramètres pour la régression suivants : 
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & m & b \\
+\hline
+coefficient & 1.16615e-07 & 0.000263775 \\
+Erreur asymptotique & +/- 3.17e-09 & +/- 0.0002832  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_cons_arbre_regression.png}
+\caption{Mesure du temps pris par la construction, tas sous forme d'arbre}
+\end{figure}
+
+En observant la correspondance, il apparaît que la construction avec des tas implémentés par une arborescence semble être en $O(n)$.
+
+
+
 
 \subsection{Vérification graphique pour l'union}
 
+La complexité théorique de la fonction de l'union, comme montré précédemment, est en $O(n + m )$, nous avons donc utilisé la fonction suivante pour l'ajuster à nos courbes avec les paramètres m et b ( $x = n+m $): 
+
+$$
+f(x) = mx +b
+$$
+
+Pour nos jeux de tests, nous avons décidé de faire fixer à chaque fois l'union entre deux tas de même taille. Nous courbes représentent donc l'évolution du temps par l'algorithme pour fusionner deux tas de taille n, variant de 1000 à 2000000,  20 itérations servent à faire la moyenne (pour nos 5 jeux de données d'une taille précise, on fait la fusion avec les autres jeux de données uns par uns). Ce choix est dû au fait que pour estimer la complexité au pire cas de l'union, la seule donnée intéressante à faire varier est $n+m$, avec n la taille du premier tas et m celle du second, et pas la taille des deux tas prise individuellement\footnote{De premiers essais en fixant $n$ à 1000 nous ont montré une complexité similaire, il ne nous a pas semblé utile d'aller plus loin dans les expérimentations sur ce sujet}.
+
+Notons également d'une rapide vérification avec la commande unix diff nous a permis de nous assurer que dans nos jeux de clés de même taille, il n'y avait aucune répétitions.
+
+
+\subsubsection{Tas implémenté avec un tableau}
+
+Nous obtenons la courbe et les paramètres pour la régression suivants : 
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & m & b \\
+\hline
+coefficient & 3.86017e-07 & -0.00183903 \\
+Erreur asymptotique & +/- 7.759e-09 & +/- 0.000693  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_union_tab_regression.png}
+\caption{Mesure du temps pris par l'union, tas sous forme de tableau}
+\end{figure}
+
+En observant la correspondance, il apparaît que l'union avec des tas implémentés par un tableau semble être en $O(n)$.
+
+
+\subsubsection{Tas implémenté avec une arborescence}
+
+Nous obtenons la courbe et les paramètres pour la régression suivants : 
+
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+ & m & b \\
+\hline
+coefficient & 3.97294e-07 &-0.00070037 \\
+Erreur asymptotique & +/- 6.106e-09 & +/- 0.0005454  \\
+\hline
+\end{tabular}
+\end{center}
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_union_arbre_regression.png}
+\caption{Mesure du temps pris par l'union, tas sous forme d'arbre}
+\end{figure}
+
+En observant la correspondance, il apparaît que l'union avec des tas implémentés par une arborescence semble être en $O(n)$.
+
+
+\subsection{Conclusion sur cette partie}
+
+Ainsi, dans cette section, nous avons étudié deux manières d'implémenter un tas minimal : la manière usuelle et impérative, et une manière davantage compatible avec le style fonctionnel d'OCaml.
+
+Il est alors intéressant de noter que le choix du langage a probablement pu influencer nos expérimentations, notamment sur les vitesses des opérations dans nos deux structures : le tas minimal sous forme d'arbre semble être plus rapide, en OCaml, du fait que le langage s'adapte très bien au style fonctionnel\footnote{notre hypothèse concernant cette notable différence est que le compilateur optimise plus facilement cette manière de faire que des parcours de tableau}.
+
+Grâce à l'implémentation purement fonctionnelle sous forme d'arbre, nous avons pu nous confronter aux difficultés qu'il peut y avoir à manipuler ce type de structures dans ce paradigme de programmation, ce qui nous a fait essayer de comprendre plus en détail le fonctionnement d'un tas, et de chercher des propriétés dessus qui pourraient nous être utiles pour parcourir nos arbres de haut en bas par un chemin en $O(log n)$.
+
+Nous avons également pu étudier une manière moins naïve de construire un tas minimal grâce à l'algorithme de Robert Floyd\cite{ACM}, ainsi qu'une approche plus poussée de la complexité au pire cas sur des tas minimum.
 
 \section{File binomiale}
 
+%TODO raconter la base des bases sur ce qu'est une file binomiale
+Dans cette section, nous allons étudier l'implémentation en OCaml d'une file binomiale\cite{TasBinom}, et ce dans un style purement fonctionnel, ce qui s'accorde assez bien avec la structure.
+Le code se trouve dans le fichier \textit{src/file\_binomiale}. 
+
 \subsection{Primitives et structure}
+
+Nous définissions sa structure, en OCaml, à l'aide de deux types récursifs : 
+
+\begin{lstlisting}
+(*Racine(degre,cle,fils)*)
+type tournois_b = Racine of int * Int128.t * (tournois_b list)  | Empty 
+(*File(indice,tournois) tournois le plus petit a droite de la liste *) 
+type file_b = File of int * (tournois_b list) | Empty 
+\end{lstlisting}
+
+Nous définissons également les primitives suivante (leur code se trouve dans le fichier \textit{src/file\_binomiale.ml} :
+
+\begin{lstlisting}
+let est_vide_t (t : tournois_b) : bool = (*...*)
+
+let degree (t:tournois_b) : int = (*...*)
+
+let union2Tid (t1:tournois_b) (t2:tournois_b) : tournois_b = (*...*)
+
+let rec  pow_2 (n:int) : int = (*...*)
+
+let rec tournois_reverse (ol : tournois_b list ) (nl : tournois_b list): tournois_b list = (*...*)
+
+let decapiter (t: tournois_b) : file_b = (*...*)
+
+let file(t:tournois_b) : file_b = (*...*)
+
+let est_vide_f (f: file_b ) : bool = (*...*)
+
+let rec last_tournois  (li : tournois_b list) : tournois_b = (*...*)
+
+let mindeg (f:file_b) : tournois_b = (*...*)
+
+let reste (f:file_b) : file_b = (*...*)
+
+let ajout_min (t:tournois_b) (f:file_b) : file_b = (*...*)
+\end{lstlisting}
 
 \subsection{Fonctions fondamentales}
 

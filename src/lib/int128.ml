@@ -43,10 +43,10 @@ let of_str(str:string): t =
 let to_str (cle : t) : string = 
   let (x1,x2,x3,x4) = cle in 
   let (sx1,sx2, sx3, sx4) = (
-    (Printf.sprintf "0x%08lX" x1),
-    (Printf.sprintf "%08lX" x2),
-    (Printf.sprintf "%08lX" x3),
-    (Printf.sprintf "%08lX" x4)
+    (Printf.sprintf "%lx ." x1),
+    (Printf.sprintf " %lx ." x2),
+    (Printf.sprintf " %lx ." x3),
+    (Printf.sprintf " %lx" x4)
   ) in String.cat sx1 (String.cat sx2 (String.cat sx3 sx4))
 
 let list_of_file (file_name : string) (nb_entier : int ): t list =

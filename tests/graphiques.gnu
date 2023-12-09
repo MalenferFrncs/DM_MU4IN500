@@ -17,6 +17,34 @@ plot "complexite_ajout_tab.txt" using 1:2 with linespoints title "ajout itérati
 
 reset 
 set terminal png
+set output "../Images/courbes/cplxt_ajout_iteratif.png"
+set xlabel "taille de l'échantillon (nombre de clef)"
+set ylabel "Temps moyen (sur 5 itérations)"
+plot "complexite_ajout_tab.txt" using 1:2 with linespoints title "tableau", "complexite_ajout_arbre.txt" using 1:2 with linespoints title "arbre"
+
+
+reset 
+set terminal png
+set output "../Images/courbes/regression_ajout_iteratif_arbre.png"
+set xlabel "taille de l'échantillon (nombre de clef)"
+set ylabel "Temps moyen (sur 5 itérations)"
+l(x) = (a*x+b) * log (m*x+c) 
+fit l(x) "complexite_ajout_arbre.txt" using 1:2 via a,b,c,m
+plot l(x) title "regression", "complexite_ajout_arbre.txt" using 1:2 with linespoints title "ajout iteratif"
+
+
+reset 
+set terminal png
+set output "../Images/courbes/regression_ajout_iteratif_tab.png"
+set xlabel "taille de l'échantillon (nombre de clef)"
+set ylabel "Temps moyen (sur 5 itérations)"
+l(x) = (a*x+b) * log (m*x+c) 
+fit l(x) "complexite_ajout_tab.txt" using 1:2 via a,b,c,m
+plot l(x) title "regression", "complexite_ajout_tab.txt" using 1:2 with linespoints title "ajout iteratif"
+
+
+reset 
+set terminal png
 set output "../Images/courbes/cplxt_cons.png"
 set xlabel "taille de l'échantillon (nombre de clef)"
 set ylabel "Temps moyen (sur 5 itérations)"
@@ -73,7 +101,7 @@ reset
 set terminal png
 set output "../Images/courbes/cplxt_union_arbre_regression.png"
 set xlabel "taille de l'échantillon (nombre de clef)"
-set ylabel "Temps moyen (sur 5 itérations)"
+set ylabel "Temps moyen (sur 20 itérations)"
 h (x) = m*x +b
 fit h(x) "complexite_union_arbre.txt" using 1:2 via m,b
 plot h(x) title "regression linéaire", "complexite_union_arbre.txt" using 1:2 title "union par arbre" with points
@@ -83,7 +111,9 @@ reset
 set terminal png
 set output "../Images/courbes/cplxt_union_tab_regression.png"
 set xlabel "taille de l'échantillon (nombre de clef)"
-set ylabel "Temps moyen (sur 5 itérations)"
+set ylabel "Temps moyen (sur 20 itérations)"
 i(x) = m*x +b
 fit i(x) "complexite_union_tab.txt" using 1:2 via m,b
 plot i(x) title "regression linéaire", "complexite_union_tab.txt" using 1:2 title "union par tableau" with points
+
+

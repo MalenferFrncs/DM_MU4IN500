@@ -92,7 +92,7 @@ let ajout_min (t:tournois_b) (f:file_b) : file_b =
 
 (* fin de l'ajout des primitives sur les tournois binomiaux et les fils binomiales *)
 
-(* ajouts des 4 fonctiosn fondamentals *)
+(* ajouts des 4 fonctions fondamentales *)
 
 (*ajout de l'Union *)
 

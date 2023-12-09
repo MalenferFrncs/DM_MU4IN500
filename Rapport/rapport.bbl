@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{Doberkat}
+Ernst~E. Doberkat.
+\newblock An average case analysis of floyd's algorithm to construct heaps.
+\newblock {\em Information and Control}, 61(2):114--131, 1984.
+
 \bibitem{ACM}
 Robert~W. Floyd.
 \newblock Algorithm 245: Treesort.
@@ -16,5 +21,10 @@ Chris Okasaki.
 \newblock {\em Purely Functionnal Data Structures}.
 \newblock Cambridge University Press, 1998.
 \newblock page 17.
+
+\bibitem{TasBinom}
+Jean Vuillemin.
+\newblock A data structure for manipulating priority queues.
+\newblock {\em Commun. ACM}, 21(4):309–315, apr 1978.
 
 \end{thebibliography}
