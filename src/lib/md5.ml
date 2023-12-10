@@ -1,136 +1,24 @@
 open Int32;;
 open Int64;;
 open Int128 ;;
+let int32_of_int64 (n : int64) : int32*int32 =
+  let faible = Int64.to_int32 n in
+  let fort = Int64.to_int32 (Int64.shift_right_logical n 32) in
+  fort,faible
 
-
-
-
-    
-
-    
-let hex_to_chr (hex : string ) : char = Char.chr (Int32.to_int (Int32.of_string hex))
-    (*bon*)
-
-let str_of_int64 (bigmot : int64): string=
-  let bit_faible_64 (t : int64) : string =
-  
-    let bit_n_is_1 (entier : int64) (n:int): bool =
-      (Int64.logand (Int64.shift_right entier n) 1L) = 1L
-    in
-  
-    if (bit_n_is_1 t 3)
-    then if (bit_n_is_1 t 2)
-      then if (bit_n_is_1 t 1)
-        then if (bit_n_is_1 t 0)
-          then "f"
-          else "e"
-        else if (bit_n_is_1 t 0)
-        then "d"
-        else "c"
-      else if (bit_n_is_1 t 1)
-      then if (bit_n_is_1 t 0)
-        then "b"
-        else "a"
-      else if (bit_n_is_1 t 0)
-      then "9"
-      else "8"
-    else if (bit_n_is_1 t 2)
-    then if (bit_n_is_1 t 1)
-      then if (bit_n_is_1 t 0)
-        then "7"
-        else "6"
-      else if (bit_n_is_1 t 0)
-      then "5"
-      else "4"
-    else if (bit_n_is_1 t 1)
-    then if (bit_n_is_1 t 0)
-      then "3"
-      else "2"
-    else if (bit_n_is_1 t 0)
-    then "1"
-    else "0"
-  in
-  let rec str_byte_of_int64 (mot : int64) (res : string) (i:int): string =
-    if i = 8 then res
-    else 
-      let p = (bit_faible_64 mot) in
-      let g = (bit_faible_64 (Int64.shift_right mot 4)) in
-      let str = String.make 1 (hex_to_chr ("0x"^g^p)) in
-      str_byte_of_int64 (Int64.shift_right_logical mot 8) (str^res) (i+1)
-  in
-  str_byte_of_int64 bigmot "" 0
 ;;
   
 
-let str_of_int32 (mot : int32 ) : string = 
-  let bit_faible_32 (t : int32) : string =
-  
-    let bit_n_is_1 (entier : int32) (n:int): bool =
-      (Int32.logand (Int32.shift_right entier n) 1l) = 1l
-    in
-  
-    if (bit_n_is_1 t 3)
-    then if (bit_n_is_1 t 2)
-      then if (bit_n_is_1 t 1)
-        then if (bit_n_is_1 t 0)
-          then "f"
-          else "e"
-        else if (bit_n_is_1 t 0)
-        then "d"
-        else "c"
-      else if (bit_n_is_1 t 1)
-      then if (bit_n_is_1 t 0)
-        then "b"
-        else "a"
-      else if (bit_n_is_1 t 0)
-      then "9"
-      else "8"
-    else if (bit_n_is_1 t 2)
-    then if (bit_n_is_1 t 1)
-      then if (bit_n_is_1 t 0)
-        then "7"
-        else "6"
-      else if (bit_n_is_1 t 0)
-      then "5"
-      else "4"
-    else if (bit_n_is_1 t 1)
-    then if (bit_n_is_1 t 0)
-      then "3"
-      else "2"
-    else if (bit_n_is_1 t 0)
-    then "1"
-    else "0"   
-  in
-  (*bon*)
-  let rec str_byte_of_int32 (mot : int32) (res : string) (i:int): string =
-    if i = 4 then res
-    else 
-      let p = (bit_faible_32 mot) in
-      let g = (bit_faible_32 (Int32.shift_right mot 4)) in
-      let str = String.make 1 (hex_to_chr ("0x"^g^p)) in
-      str_byte_of_int32 (Int32.shift_right_logical mot 8) (str^res) (i+1)
-  in
-  str_byte_of_int32 mot "" 0
-;;
-
-
-  
-
-let padding (str : string) (len : int) (len_total : int64 ) (fin :bool ) : string = 
-  let remplire (str : string) (taille : string) (i : int) :char =
+let padding (str : string) (len : int) (fin :bool ) : string = 
+  let remplire (str : string) (i : int) :char =
     if i < (String.length str) then str.[i]
     else if (i=(String.length str) && fin) then (Char.chr 128) 
-    else if i >= 56 then taille.[(7-(i mod 56))]
     else '\000'
-  in
-  (* bon *)
-  let taille_str = str_of_int64 len_total in
-  String.init 64 (remplire str taille_str) 
-  
-  
-                 
-  
+  in 
+  String.init 64 (remplire str) 
 ;;  
+
+
 
 
 
@@ -138,14 +26,18 @@ let rec int32_array_of_str (str :string) (len_total : int): int32 array list =
   
   let len = String.length str in
   if len < 56 then  
-    let pad_str = padding  str len (Int64.mul (Int64.of_int (len_total+len)) 8L) true in 
+    let pad_str = padding  str len true in 
     
     let res = Array.make 16 0l in
-    for i = 0 to 15 do 
+    for i = 0 to 13 do 
       let res_i32 = String.get_int32_le pad_str (i*4) in
       
       res.(i)<- res_i32
     done ; 
+    let grand,petit = int32_of_int64 (Int64.mul (Int64.of_int (len_total+len)) 8L)in
+    res.(14)<- petit;
+    res.(15)<- grand;
+      
     res::[] 
          
          
@@ -161,7 +53,7 @@ let rec int32_array_of_str (str :string) (len_total : int): int32 array list =
          
   else 
     let debut_res = str^(String.make 1 (Char.chr 128))^(String.make (64-len-1) '\000') in
-    let fin_res = (padding "" 0  (Int64.mul (Int64.of_int (len_total+len)) 8L)) false in
+    let fin_res = (padding "" 0  ) false in
     let res_d = Array.make 16 0l in
     let res_f = Array.make 16 0l in
     for i = 0 to 15 do 
@@ -170,6 +62,9 @@ let rec int32_array_of_str (str :string) (len_total : int): int32 array list =
       res_d.(i)<- res_i32_d;
       res_f.(i)<- res_i32_f;
     done ;
+    let grand,petit = int32_of_int64 (Int64.mul (Int64.of_int (len_total+len)) 8L)in
+    res_f.(14)<- petit;
+    res_f.(15)<- grand;
     res_d::res_f::[]
     
     
@@ -218,7 +113,7 @@ let k = [| 0xd76aa478l; 0xe8c7b756l; 0x242070dbl; 0xc1bdceeel ;
            0xf7537e82l; 0xbd3af235l; 0x2ad7d2bbl; 0xeb86d391l |]
   
         
-let digest (str:string) : Int128.t =        
+let digest (str:string) : t =        
   
   let m_li : int32 array list = int32_array_of_str str 0 in
 
@@ -280,27 +175,3 @@ let digest (str:string) : Int128.t =
   
       
 ;;
-
-
-
-
-
-
-
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
