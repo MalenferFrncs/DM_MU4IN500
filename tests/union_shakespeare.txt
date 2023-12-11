@@ -1,3 +1,0 @@
-"Tas min Arbre"	0.0053394500
-"Tas min Tableau"	0.0030559000
-"File binomiale"	0.0000034000

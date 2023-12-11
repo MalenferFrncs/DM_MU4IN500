@@ -15,7 +15,7 @@ let est_dans_noeud (cle : Int128.t) (t : arbre234) : bool =
   | Feuille2 (elt1,elt2) -> (Int128.eg elt1  cle) || (Int128.eg elt2  cle) 
   | Noeud2 (elt, _,_) -> Int128.eg elt cle 
   | Noeud3 (elt1,elt2,_,_,_) -> (Int128.eg elt1 cle) || (Int128.eg elt2 cle) 
-  | Noeud4 (elt1,elt2,elt3,_,_,_,_) -> (Int128.eg elt1 cle) || (Int128.eg elt2 cle) || (Int128.eg elt3 cle) (*À CHANGER*)
+  | Noeud4 (elt1,elt2,elt3,_,_,_,_) -> (Int128.eg elt1 cle) || (Int128.eg elt2 cle) || (Int128.eg elt3 cle) 
 
 let rec recherche (cle : Int128.t) (t : arbre234) : bool = 
   (est_dans_noeud cle t) ||(
@@ -25,18 +25,18 @@ let rec recherche (cle : Int128.t) (t : arbre234) : bool =
     | Feuille2(_,_) -> false
     | Noeud2 (elt, g,d) ->  if (Int128.inf cle elt) then recherche cle g else recherche cle d
     | Noeud3 (elt1, elt2, g, m, d) -> 
-      if (Int128.inf cle elt1) then (*À CHANGER*)
+      if (Int128.inf cle elt1) then 
         recherche cle g 
-      else if (Int128.inf cle elt2) then (*À CHANGER*)
+      else if (Int128.inf cle elt2) then 
         recherche cle m
       else 
         recherche cle d
     | Noeud4 (elt1, elt2, elt3, g, m, n, d) ->
-      if (Int128.inf cle elt1) then (*À CHANGER*)
+      if (Int128.inf cle elt1) then 
         recherche cle g 
-      else if (Int128.inf cle elt2) then (*À CHANGER*)
+      else if (Int128.inf cle elt2) then 
         recherche cle m 
-      else if (Int128.inf cle elt3) then (*À CHANGER*)
+      else if (Int128.inf cle elt3) then 
         recherche cle n 
       else 
         recherche cle d
@@ -52,26 +52,26 @@ let ajout (cle : Int128.t) (t : arbre234) : arbre234 =
       match t with 
       | Empty -> Feuille1(cle)
       | Feuille1(elt) -> 
-        if (Int128.inf cle elt) then (*À CHANGER*)
+        if (Int128.inf cle elt) then 
           Feuille2(cle,elt) 
         else 
           Feuille2(elt,cle)
       | Feuille2(elt1,elt2) -> 
-        if (Int128.inf cle elt1) then (*À CHANGER*)
+        if (Int128.inf cle elt1) then 
           raise (Eclatement (elt1,Feuille1 (cle),Feuille1(elt2)))
-        else if (Int128.inf cle elt2) then (*À CHANGER*)
+        else if (Int128.inf cle elt2) then 
           raise (Eclatement (cle,Feuille1 (elt1),Feuille1(elt2))) 
         else 
           raise (Eclatement (elt2,Feuille1 (elt1),Feuille1(cle))) 
       | Noeud2 (elt, g,d) ->  
-        if (Int128.inf cle elt) then (*À CHANGER*)
+        if (Int128.inf cle elt) then 
           (try Noeud2 (elt,insertion234 cle g, d)
            with Eclatement (r,ng,nd) -> Noeud3(r,elt,ng, nd, d))
         else 
           (try Noeud2 (elt,g, insertion234 cle d)
            with Eclatement (r,ng,nd) -> Noeud3(elt, r,g, ng, nd)) 
       | Noeud3 (elt1, elt2, g,m,d) -> 
-        if (Int128.inf cle elt1) then (*À CHANGER*)
+        if (Int128.inf cle elt1) then 
           (try (Noeud3 (elt1,elt2, (insertion234 cle g), m, d))
            with Eclatement(r,ng,nd) -> Noeud4(r,elt1,elt2, ng,nd, m, d))
         else if (Int128.inf cle elt2) then 
@@ -82,13 +82,13 @@ let ajout (cle : Int128.t) (t : arbre234) : arbre234 =
            with Eclatement(r,ng,nd) -> Noeud4(elt1,elt2, r, g, m, ng,nd) )
 
       | Noeud4 (elt1, elt2, elt3, g, m, n, d) ->
-        if (Int128.inf cle elt1) then (*À CHANGER*)
+        if (Int128.inf cle elt1) then 
           (*Insérer à g et récupérer un possible éclatement*)
           ( try (Noeud4 (elt1, elt2, elt3, insertion234 cle g, m, n ,d))
             with Eclatement (r,ng, nd) -> 
               raise (Eclatement (elt2,Noeud3 (r, elt1,ng,nd,m), Noeud2 (elt3, n, d)))
           )
-        else if (Int128.inf cle elt2) then (*À CHANGER*)
+        else if (Int128.inf cle elt2) then 
           (*Insérer à m et récupérer un possible éclatement*)
           ( try (Noeud4 (elt1, elt2, elt3, g,insertion234 cle m, n ,d))
             with Eclatement (r,ng, nd) -> 

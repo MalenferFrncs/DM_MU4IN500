@@ -33,6 +33,7 @@ fit l(x) "complexite_ajout_arbre.txt" using 1:2 via a,b,c,m
 plot l(x) title "regression", "complexite_ajout_arbre.txt" using 1:2 with linespoints title "ajout iteratif"
 
 
+
 reset 
 set terminal png
 set output "../Images/courbes/regression_ajout_iteratif_tab.png"
@@ -71,10 +72,12 @@ plot "complexite_union_file.txt" using 1:2 with linespoints title "union par fil
 
 reset 
 set terminal png
-set output "../Images/courbes/cplxt_binomiale.png"
+set output "../Images/courbes/cplxt_binomiale_regression.png"
 set xlabel "taille de l'échantillon (nombre de clef)"
 set ylabel "Temps moyen (sur 20 itérations)"
-plot "complexite_cons_file.txt" using 1:2 with linespoints title "construction file binomiale"
+f(x) = m*x+b
+fit f(x) "complexite_cons_file.txt" using 1:2 via m,b
+plot f(x) title "regression linéaire", "complexite_cons_file.txt" using 1:2 with linespoints title "construction file binomiale"
 
 
 reset

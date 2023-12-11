@@ -128,7 +128,7 @@ OCaml nous donne accès au module Int32, qui permet d'avoir des entiers codés s
 
 \medskip
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 open Int32;;
 type entier128 = (Int32.t * Int32.t * Int32.t * Int32.t);;
 
@@ -137,7 +137,7 @@ type entier128 = (Int32.t * Int32.t * Int32.t * Int32.t);;
 
 Pour implémenter nos prédicats, nous avons choisi d'écrire une fonction compare, qui compare des bits de poids forts vers ceux de poids faible les entiers 32 bits qui composent nos entier 128 bits. Ce choix nous permet de factoriser le code pour nos deux prédicats de comparaison.
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 let cmp (cle1 : t) (cle2 : t) : int = 
   let (a1, b1, c1, d1) = cle1 and (a2, b2, c2, d2) = cle2 in 
   if a1=a2 then 
@@ -156,7 +156,7 @@ let cmp (cle1 : t) (cle2 : t) : int =
 
 Ce prédicat peut être implémenté en vérifiant si le résultat de compare est négatif. Nous avons également implémenté une fonction \textit{inf2}, qui permet de manipuler des clés sous forme de type option.
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 let inf (cle1 : t) (cle2 : t) : bool = (cmp cle1 cle2) < 0
 
 \end{lstlisting}
@@ -164,7 +164,7 @@ let inf (cle1 : t) (cle2 : t) : bool = (cmp cle1 cle2) < 0
 \subsection{Le prédicat eg}
 De manière analogue, le prédicat peut être implémenté en vérifiant si le résultat de compare est nul.
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 let inf (cle1 : int128) (cle2 : int128) : bool = (cmp cle1 cle2) = 0
 \end{lstlisting}
 
@@ -177,7 +177,7 @@ Le code se trouve dans les fichiers \textit{tas\_min\_tab.ml} et \textit{tas\_mi
 
 Nos structure sont les suivantes : 
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 (*indice dernier element * taille du tableau * tableau*)
 type heapArray = int ref * int ref * (Int128.t option) Array.t;;
 
@@ -261,7 +261,7 @@ Pour résoudre ce problème, nous utilisons le fait qu'à un nombre d'éléments
 
 La fonction construction consiste alors à récupérer la taille de la liste, puis faire un appel à \textit{make\_tas}.
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t list)= 
   if taille = 0 || taille < 0 then (E,li)
   else if taille = 1 then
@@ -384,7 +384,7 @@ Pour un tas sous forme d'arborescence, notre fonction \textit{heap\_to\_list} ne
 \subsection{Vérification graphique des complexités temporelles}
 Pour ces vérifications graphiques, nous avons choisi comme mesure le temps système (en secondes). Chaque fonction testée l'est grâce à la fonction \textit{time\_of} qui mesure le temps d'une fonction appliquée à un paramètre, tout deux passés en argument.
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 let time_of (f : 'a -> 'b) (arg : 'a): float =
   let debut = Sys.time() in
   let _ = f arg in
@@ -608,7 +608,7 @@ Le code se trouve dans le fichier \textit{src/file\_binomiale}.
 
 Nous définissions sa structure, en OCaml, à l'aide de deux types récursifs : 
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 (*Racine(degre,cle,fils)*)
 type tournois_b = Racine of int * Int128.t * (tournois_b list)  | Empty 
 (*File(indice,tournois) tournois le plus petit a droite de la liste *) 
@@ -617,7 +617,7 @@ type file_b = File of int * (tournois_b list) | Empty
 
 Nous définissons également les primitives suivante (leur code se trouve dans le fichier \textit{src/file\_binomiale.ml} :
 
-\begin{lstlisting}
+\bigskip \begin{lstlisting}
 let est_vide_t (t : tournois_b) : bool = (*...*)
 
 let degree (t:tournois_b) : int = (*...*)
@@ -644,17 +644,244 @@ let ajout_min (t:tournois_b) (f:file_b) : file_b = (*...*)
 \end{lstlisting}
 
 \subsection{Fonctions fondamentales}
+Nous avons implémenté les fonctions fondamentales de manipulation d'une file binomiale conformément à leur définition dans le cours. L'implémentation étant assez transparente vis à vis du style fonctionnel utilisé en OCaml, nos fonctions sont assez transparentes avec les algorithmes sous-jacents.
+
+Notons tout de même que la manière d'implémenter les files binomiales nous amène à avoir des tournois sous forme \texttt{[Empty]}, il a donc fallu traiter ce cas dans nos pattern matchings.
+
+\subsubsection{Union}
+
+La fonction Union est à réaliser en premier car elle est utilisée par toutes nos autres fonctions fondamentales : elle fonctionne de manière analogue à une addition bit à bit : on fusionne à chaque fois les tournois de degré identique pour former un tournoi du degré successeur, qui sera pris en compte comme une retenue pour la fusion suivante. Fusionner deux tas binomiaux de même taille consiste à faire d'un des deux tas le fils de la racine de l'autre (en gardant le minimum à la racine).
+
+\bigskip \begin{lstlisting}
+
+let rec unionFile (f1:file_b) (f2:file_b) : file_b =
+
+  let rec uFret (f1 : file_b) (f2:file_b) (t:tournois_b) :file_b = 
+    if est_vide_t t then  (* pas de tournois en retenu*)
+      (*On fait la fusion des deux tas de meme degre en prenant la racine minimale comme parent de l'autre tas*)
+      if est_vide_f f1 then f2
+      else if est_vide_f f2 then f1 
+      else
+        let t1 = mindeg f1 in 
+        let t2 = mindeg f2 in
+
+        if (degree t1) < (degree t2) then ajout_min t1 (unionFile (reste f1) f2)
+        else if (degree t2) < (degree t1) then ajout_min t2 (unionFile (reste f2)f1)
+        else uFret (reste f1) (reste f2) (union2Tid t1 t2)
+
+
+    else (*  t tournois en retenue *)
+    	(*Meme principe, mais en prenant la retenue en compte*)
+  in
+  uFret f1 f2 Empty
+\end{lstlisting}
+
+
+\subsubsection{\textit{Suppr\_min}}
+
+Pour supprimer le minimum, dans le cas où la file binomiale n'est pas vide, on utilise la fonction auxiliaire \textit{get\_min} qui nous permet d'obtenir une liste de tournois sans le minimum, ainsi que le tournois contenant le minimum. Il suffit alors de faire une union de la file binomiale sans le tournoi minimum, et le tournoi minimum privé de son élément minimal (qui est à sa tête).
+
+\bigskip \begin{lstlisting}
+let suppr_min (f:file_b) : file_b =
+  match f with
+  |Empty -> Empty
+  |File(indice,tournois) ->   (*si la file est normal*)
+    match tournois with
+    |[]->Empty
+    |Empty::tl -> Empty 
+    |Racine(deg,cle,fils)::tl-> 
+      let list_sans_min,tournois_min = get_min tournois cle in 
+      (unionFile (File((indice - (pow_2  (degree tournois_min) )),list_sans_min)) (decapiter tournois_min))
+      (* union entre la file privee de son tournoi min et de la file produite par le tournois min decapite*)
+\end{lstlisting}
+\subsubsection{Ajout}
+
+Pour réaliser l'ajout, il suffit de créer un tournoi contenant un tas binomial de degré 0 contenant l'élément à ajouter et de faire l'union avec la file binomiale passée en argument 
+
+\bigskip \begin{lstlisting}
+let ajout (x:Int128.t) (f:file_b) : file_b =
+  let tx : tournois_b = Racine(0,x,Empty::[]) in
+  let fx : file_b = file tx in
+  unionFile f fx 
+\end{lstlisting}
+
+\subsubsection{Construction}
+On fait simplement des ajouts sucessifs dans la file qu'on créé :
+\bigskip \begin{lstlisting}
+let rec construction (liste_cles : Int128.t list): file_b =
+  let rec loop (liste_cles : Int128.t list)  (file_bino : file_b) : file_b = 
+    match liste_cles with 
+    | [] -> file_bino
+    | hd::tl -> (loop tl (ajout hd file_bino))
+  in
+  loop liste_cles Empty
+\end{lstlisting}
+
 
 \subsection{Vérification graphique de la complexité de construction}
+Ces expérimentations; et celles de la section suivante ont été faites selon le même protocole que pour le tas minimum. 
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_binomiale.png}
+\caption{Mesure du temps pris par la construction, file binomiale}
+\end{figure}
+
+
+La courbe obtenue expérimentalement semble confirmer notre complexité linéaire théorique.
 
 \subsection{Vérification graphique de la complexité de union}
 
+La complexité théorique de l'union de deux files binomiales est $O(log (n))$. Pour le vérifier, nous avons mesuré le temps que prenait l'union de deux files binomiales de taille égale, ce qui est un pire cas dans la mesure où il y a un nombre maximal de retenues à propager, ce qui prend le plus de temps dans notre algorithme.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_union_file.png}
+\caption{Mesure du temps pris par l'union de deux files binomiales de taille égale (en abscisse)}
+\end{figure}
+
+
+L'allure de la courbe semble bien nous indiquer une complexité en $O(log (n))$.
+
+
+\subsection{Conclusion sur cette partie}
+
+L'implémentation d'une structure de file binomiale se fait assez aisément en OCaml du fait de sa forme arborescente, nous avons pu ainsi implémenter cette structure et vérifier expérimentalement que nos fonctions s'approchaient des complexités théoriques souhaitées.
 
 \section{Hachage}
 
-\section{Arbre Binaire de Recherche}
+    Nous avons choisi d'implémenter la fonction de hachage MD5\cite{md5} choisit d'aussi implementer le haschage MD5 en OCaml. Nous aurions également pu utiliser un langage de plus bas niveau tel que le C permettant de manipuler simplement nos valeurs, mais nous avons préféré garder la cohérence du langage utilisé dans le projet plutôt que de faire de l'intégration\footnote{Notons que c'est ce choix qui a été fait dans la libraire standard de OCaml pour implémenter ces fonctions...} 
+
+    \subsection{représentation des valeurs}
+
+    Nous avons choisit d'avoir comme entrée un argument de type string qu'on convertit ensuite en une liste de tableau de 16 entiers 32 bits. 
+    Nous faisons ce choix car le MD5 travaille sur des blocs de 512 bits soit 16 entier 32 bits. A chaque tour de l'algorithme Nous travaillons donc sur un seul élément de cette liste de tableaux.
+
+    \subsection{4.2 traitement du messages} 
+    \subsubsection{transformation de la chaîne }
+    
+    Pour transformer notre string en int32 nous utilisons une fonction du module String qui permet de décoder bit a bit des int32 depuis des string :
+    
+\bigskip \begin{lstlisting}
+    val get_int32_le : string -> int -> int32
+\end{lstlisting}  
+
+    Cette fonction prend la chaîne et l'indice de début de l'entier a décoder en argument et renvoie une erreur si il reste moins de 32 bit a décoder (moins de 4 caractères).
+
+    De plus la chaîne doit être paddée pour être divisible en bloque de 64 octets. 
+    on doit ajouter un bit a 1 pour marqué la fin de la chaîne puis paddée avec des 0 jusqu'à ce qu'il reste 2 octets dans lesquels on stock la taille de la chaîne en bit sut 64 bits. 
+
+    
+    on ne va pas detailler cette transformation trivial a partir du moment ou on peu de transformer notre chaîne en entier.
+
+
+    \subsubsection{implémentation du md5}
+    
+    Nous implémentons la fonction de hachage md5 en suivant l'algorithme classique. Nous avons également ajouté une fonction finish.
+\bigskip \begin{lstlisting}
+let finish (entre : int32) : int32 =
+  let res = 0l in
+  let res = Int32.logor res (Int32.shift_left (Int32.logand entre 0x000000FFl) 24) in 
+  let res = Int32.logor res (Int32.shift_left (Int32.logand entre 0x0000FF00l) 8) in 
+  let res = Int32.logor res (Int32.shift_right_logical (Int32.logand entre 0x00FF0000l) 8) in 
+  let res = Int32.logor res (Int32.shift_right_logical (Int32.logand entre 0xFF000000l) 24) in 
+  res
+;;
+\end{lstlisting} 
+
+    Nous exécutons cette fonction sur les 4 int32 qui compose le int128 renvoyé par la boucle du md5 elle permet d'inverser les octets de l'entier, ici pour le ramener en little endian.
+
+
+\subsection{Conclusion sur cette partie}
+
+Par cette manipulation fine des bits composant une chaîne de caractère, nous parvenons ainsi à hacher les chaînes passées en entrée pour obtenir des clés, ce qui nous permettra de transformer des textes pour en faire des listes de jeux de clé 128 bits, afin de tester les structures vues précédemment.
+
+\section{Arborescence de Recherche}
+
+
+Nous souhaitons dans cette partie implémenter une structure arborescente de recherche, avec la condition que la recherche dedans se fasse en un temps moyen de $log(n)$. Nous avons choisi comme structure répondant à cette condition un arbre 2-3-4, dans la mesure où la complexité des opérations d'ajout et de recherche sont en $O(log (n))$, et que son implémentation est plutôt facilitée dans le langage OCaml. 
+
+Le code complet de cette section se trouve dans \textit{src/lib/arbre\_234.ml}.
+
+\subsection{Définition de la structure}
+Un arbre 2-3-4 est une structure arborescente de recherche définie comme suit :
+
+\bigskip \begin{lstlisting}
+type arbre234 = 
+  | Empty
+  | Feuille1 of Int128.t
+  | Feuille2 of Int128.t * Int128.t
+  | Noeud2 of Int128.t * arbre234 * arbre234 
+  | Noeud3 of Int128.t * Int128.t * arbre234 * arbre234 * arbre234 
+  | Noeud4 of Int128.t * Int128.t * Int128.t * arbre234 * arbre234 * arbre234 * arbre234 
+\end{lstlisting}
+
+Un $i-Noeud$ a $i$ fils et $i - 1$ clés, une $i-Feuille$ a $i$ clés. Notons qu'ici, les types sommes de OCaml nous permettent d'économiser l'espace, habituellement perdue en programmation en style impératif avec changement d'états, car nous ne stockons que le nombre de clés du i-Noeud dans chacun de nos constructeurs (et pas 3 en attendant de les remplir dans des structures mutables). 
+
+Au sein de chaque $i-Noeud$, les $i-1$ clés nous permettent de nous aiguiller dans l'arborescence, l'ajout se fait toujours au niveau des feuilles.
+
+Les arbres 2-3-4 ont la propriété d'avoir une hauteur en $O(log (n))$, ce qui nous assure les complexités souhaitées.
+
+
+\subsection{Ajout dans la structure}
+Afin d'ajouter des clés à notre structure, nous avons utilisé un mécanisme permis par OCaml, à savoir la levée d'exception pour remonter l'arbre des appels récursifs. On définit une exception \textit{Eclatement} qui permet de faire remonter une clé et deux sous-arbres :
+
+\bigskip \begin{lstlisting}
+exception Eclatement of (Int128.t * (arbre234) * (arbre234)) ;;
+\end{lstlisting}
+
+Cette dernière est levée,  lorsqu'on cherche à ajouter une clé soit à une 2-Feuille, soit à un 4-Nœud. Dans ce cas là, on va faire remonter l'élément "central" dans nos 3 (resp. 4) clés selon l'ordre défini sur ces dernières avec pour fils deux sous-arbres correspondant à ce qu'il reste du nœud après éclatement.
+
+À chaque appel récursif, on fait un motif \textit{try ... catch} permettant de rattraper le fait qu'un nœud ait été éclaté afin de reconstruire le nœud voulu (au besoin, on lève à nouveau une exception si on a de nouveau dû éclater un nœud).
+
+\bigskip \begin{lstlisting}
+(*On suppose que cle n'est pas dans t*)
+let ajout (cle : Int128.t) (t : arbre234) : arbre234 = 
+  let rec insertion234 (cle : Int128.t) (t : arbre234) : arbre234 = 
+    if (est_dans_noeud cle t) then t 
+    else
+      match t with 
+      | Empty -> Feuille1(cle)
+      | Feuille1(elt) -> (* creation d'une Feuille2 contenant cle au bon endroit*)
+      | Feuille2(elt1,elt2) -> 
+        if (Int128.inf cle elt1) then 
+          raise (Eclatement (elt1,Feuille1 (cle),Feuille1(elt2)))
+        else if (Int128.inf cle elt2) then 
+          raise (Eclatement (cle,Feuille1 (elt1),Feuille1(elt2))) 
+        else 
+          raise (Eclatement (elt2,Feuille1 (elt1),Feuille1(cle))) 
+      | Noeud2 (elt, g,d) ->  
+        if (Int128.inf cle elt) then 
+          (try Noeud2 (elt,insertion234 cle g, d)
+           with Eclatement (r,ng,nd) -> Noeud3(r,elt,ng, nd, d))
+        else 
+          (*resp. avec l'autre fils au centre *)
+      | Noeud3 (elt1, elt2, g,m,d) -> (* idem 2Noeud mais avec une cle et un fils en plus*)
+
+      | Noeud4 (elt1, elt2, elt3, g, m, n, d) ->
+        if (Int128.inf cle elt1) then 
+          (*Inserer a g et recuperer un possible eclatement*)
+          ( try (Noeud4 (elt1, elt2, elt3, insertion234 cle g, m, n ,d))
+            with Eclatement (r,ng, nd) -> 
+              raise (Eclatement (elt2,Noeud3 (r, elt1,ng,nd,m), Noeud2 (elt3, n, d)))
+          )
+        else (*idem mais avec l'aiguillage approprie pour descendre vers les bonnes feuilles pour l'insertion*)
+  in 
+  match t with 
+  (*Gestion des cas de base*)
+\end{lstlisting}
+
+\subsection{Recherche dans l'arbre}
+La recherche se fait alors en suivant à chaque nœud le chemin selon l'encadrement des clés du nœud, puisque la hauteur d'un arbre 234 est en $O(log(n))$, la recherche l'est aussi, puisqu'on ne parcourt qu'une branche ayant une longueur en $O(log (n))$.
+
+
+\subsection{Conclusion sur cette partie}
+
+Grâce à la structure des arbres 234, nous avons un moyen de stocker des clés, et de vérifier plutôt rapidement si elles y appartiennent, ce qui nous sera utile, combiné à notre fonction de hachage implémentée précédemment, afin d'établir une liste de clés unique pour un ensemble de textes données.
 
 \section{Étude expérimentale}
+
+
 
 
 

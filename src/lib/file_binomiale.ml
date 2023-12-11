@@ -100,8 +100,6 @@ let rec unionFile (f1:file_b) (f2:file_b) : file_b =
 
   let rec uFret (f1 : file_b) (f2:file_b) (t:tournois_b) :file_b = 
     if est_vide_t t then  (* pas de tournois en retenu*)
-
-
       if est_vide_f f1 then f2
       else if est_vide_f f2 then f1 
       else
@@ -189,6 +187,7 @@ let rec construction (liste_cles : Int128.t list): file_b =
   in
   loop liste_cles Empty;;
 
+  (*Fin de la construction*)
 
 
 

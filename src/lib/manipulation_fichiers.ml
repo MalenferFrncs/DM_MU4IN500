@@ -1,6 +1,4 @@
-open Int128
-open Md5
-open Arbre_234;;
+open Int128;;
 
 let write_complexite (nom_fichier : string) (data : (int*float) list) : unit = 
   let file = open_out nom_fichier in 

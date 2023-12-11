@@ -22,6 +22,11 @@ Chris Okasaki.
 \newblock Cambridge University Press, 1998.
 \newblock page 17.
 
+\bibitem{md5}
+Ronald Rivest.
+\newblock The md5 message-digest algorithm.
+\newblock Technical report, 1992.
+
 \bibitem{TasBinom}
 Jean Vuillemin.
 \newblock A data structure for manipulating priority queues.
