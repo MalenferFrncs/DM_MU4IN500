@@ -70,7 +70,7 @@ Manipulation_fichiers.write_complexite "complexite_cons_tab.txt"  (complexite_te
 Manipulation_fichiers.write_complexite "complexite_union_arbre.txt"  (complexite_temporelle_union Tas_min_arbre.construction Tas_min_arbre.union);;
 Manipulation_fichiers.write_complexite "complexite_union_tab.txt"  (complexite_temporelle_union Tas_min_tab.construction Tas_min_tab.union);;
 
-*)
+
 
 
 

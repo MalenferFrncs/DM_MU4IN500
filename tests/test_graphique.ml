@@ -18,7 +18,6 @@ Tas_min_tab.to_dot "tas_tab_ajouts.dot" (ajout);
 let (min,tas) = (Tas_min_tab.supprMin ajout) in Tas_min_tab.to_dot "tas_tab_ajouts_supprMin.dot" tas;
 
 
-
 let l2 = Int128.list_of_file fichier_test nb_ligne in 
 (Tas_min_arbre.to_dot "tas_arbre_cons.dot" (Tas_min_arbre.construction l2));
 let ajout = Tas_min_arbre.ajout_iteratif l2 in

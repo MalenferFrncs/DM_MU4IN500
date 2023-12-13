@@ -30,8 +30,7 @@ test_graphique : test_graphique.exe
 	dot -Tpng tas_arbre_ajouts.dot -o $(REPGRAPHE)/tas_arbre_ajouts.png
 	dot -Tpng file_binomiale_cons.dot -o $(REPGRAPHE)/file_binomiale.png
 	dot -Tpng arbre_234_ajout.dot -o $(REPGRAPHE)/arbre_234.png
-
-	dot -Tpng tas_arbre_ajouts_supprMin.dot -o ../Images/tas_arbre_ajouts_supprMin.png
+	dot -Tpng tas_arbre_ajouts_supprMin.dot -o $(REPGRAPHE)tas_arbre_ajouts_supprMin.png
 
 test_temps : test_temps.exe 
 	./test_temps.exe 
@@ -57,13 +56,13 @@ $(REPDST)%.cmx: $(REPSRC)%.ml
 	$(CO) $(OFLAGS) -c $< 
 
 clean_graphe :
-	rm $(REPGRAPHE)*.png
+	rm -f $(REPGRAPHE)*.png
 
 clean_courbes : 
-	rm $(REPCOURBE)*.png
+	rm -f $(REPCOURBE)*.png
 
 clean_shakespeare :
-	rm $(REPSHAKESPEARE)*.png
+	rm -f $(REPSHAKESPEARE)*.png
 
 clean_test : clean_courbes clean_graphe clean_shakespeare 
 
@@ -71,6 +70,6 @@ clean_lib :
 	cd $(REPLIB) && $(MAKE) clean
 
 clean :
-	rm *.o *.cmi *.cmx *.exe *.out *.dot *.txt
+	rm -f *.o *.cmi *.cmx *.exe *.out *.dot *.txt
 
 .PHONY :clean_lib clean 

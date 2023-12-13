@@ -10,11 +10,23 @@ Robert~W. Floyd.
 \newblock Algorithm 245: Treesort.
 \newblock {\em Commun. ACM}, 7(12):701, dec 1964.
 
-\bibitem{Knuth}
+\bibitem{KnuthHeap}
 Donald~E. Knuth.
 \newblock {\em The Art of Computer Programming, Volume 3: (2nd Ed.) Sorting and
-  Searching}.
+  Searching}, pages 144--145.
 \newblock Addison Wesley Longman Publishing Co., Inc., USA, 1998.
+
+\bibitem{234tree}
+Donald~E. Knuth.
+\newblock {\em The Art of Computer Programming, Volume 3: (2nd Ed.) Sorting and
+  Searching}, page 481–491.
+\newblock Addison Wesley Longman Publishing Co., Inc., USA, 1998.
+
+\bibitem{leroy3ocaml}
+Xavier Leroy, Damien Doligez, Alain Frisch, Jacques Garrigue, Didier R{\'e}my,
+  and J{\'e}r{\^o}me Vouillon.
+\newblock The ocaml system: Documentation and user’s manual.
+\newblock {\em INRIA}, 3:42.
 
 \bibitem{DataStructure}
 Chris Okasaki.

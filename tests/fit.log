@@ -8773,3 +8773,523 @@ correlation matrix of the fit parameters:
                 m      b      
 m               1.000 
 b              -0.680  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:36 2023
+
+
+FIT:    data read from "complexite_ajout_arbre.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: l(x)
+	l(x) = (a*x+b) * log (m*x+c)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             m            
+   0 9.0872682250e+12   0.00e+00  5.35e+05    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+  95 6.5843595802e-04  -2.66e-02  5.35e-05    3.580751e-08   4.008568e-04   9.947429e-01   5.343162e+00
+
+After 95 iterations the fit converged.
+final sum of squares of residuals : 0.000658436
+rel. change during last iteration : -2.65666e-07
+
+degrees of freedom    (FIT_NDF)                        : 4
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.01283
+variance of residuals (reduced chisquare) = WSSR/ndf   : 0.000164609
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 3.58075e-08      +/- 3.168e-07    (884.7%)
+b               = 0.000400857      +/- 0.00617      (1539%)
+c               = 0.994743         +/- 1.928e+05    (1.938e+07%)
+m               = 5.34316          +/- 677.6        (1.268e+04%)
+
+correlation matrix of the fit parameters:
+                a      b      c      m      
+a               1.000 
+b               0.991  1.000 
+c              -0.083 -0.166  1.000 
+m              -1.000 -0.993  0.091  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:36 2023
+
+
+FIT:    data read from "complexite_ajout_tab.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: l(x)
+	l(x) = (a*x+b) * log (m*x+c)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             m            
+   0 6.3394027926e-03   0.00e+00  2.20e-02    3.580751e-08   4.008568e-04   9.947429e-01   5.343162e+00
+ 839 2.8132594210e-05  -7.11e-01  2.20e-14    6.167415e-09  -8.241037e-06   4.927293e+04   1.044836e+10
+
+After 839 iterations the fit converged.
+final sum of squares of residuals : 2.81326e-05
+rel. change during last iteration : -7.10816e-06
+
+degrees of freedom    (FIT_NDF)                        : 4
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00265201
+variance of residuals (reduced chisquare) = WSSR/ndf   : 7.03315e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 6.16741e-09      +/- 4.15e-08     (672.8%)
+b               = -8.24104e-06     +/- 7.523e-05    (912.9%)
+c               = 49272.9          +/- 5.297e+15    (1.075e+13%)
+m               = 1.04484e+10      +/- 2.492e+12    (2.385e+04%)
+
+correlation matrix of the fit parameters:
+                a      b      c      m      
+a               1.000 
+b              -0.552  1.000 
+c               0.552 -0.843  1.000 
+m              -1.000  0.552 -0.557  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:37 2023
+
+
+FIT:    data read from "complexite_cons_file.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x) = m*x+b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 6.9677729794e+30   0.00e+00  6.60e+14    1.044836e+10  -8.241037e-06
+   6 1.0598564934e-04  -1.28e-11  6.60e+12    3.275173e-07  -8.241037e-06
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 0.000105986
+rel. change during last iteration : -1.27871e-16
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00420289
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.76643e-05
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 3.27517e-07      +/- 2.269e-08    (6.929%)
+b               = -8.24104e-06     +/- 0.002027     (2.46e+04%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:37 2023
+
+
+FIT:    data read from "complexite_cons_tab.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f (x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 2.0496367434e-03   0.00e+00  2.07e-02    3.275173e-07  -8.241037e-06
+   7 7.0517962711e-06  -3.99e-08  2.07e-09    5.112822e-07  -6.586439e-04
+
+After 7 iterations the fit converged.
+final sum of squares of residuals : 7.0518e-06
+rel. change during last iteration : -3.99145e-13
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00108411
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.1753e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 5.11282e-07      +/- 5.854e-09    (1.145%)
+b               = -0.000658644     +/- 0.0005228    (79.38%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:37 2023
+
+
+FIT:    data read from "complexite_cons_arbre.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: g(x)
+	g (x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 6.6962234937e-03   0.00e+00  3.23e-02    5.112822e-07  -6.586439e-04
+   5 1.4317253473e-05  -6.51e-06  3.23e-07    1.833189e-07  -7.537362e-05
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 1.43173e-05
+rel. change during last iteration : -6.51132e-11
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00154474
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.38621e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 1.83319e-07      +/- 8.341e-09    (4.55%)
+b               = -7.53736e-05     +/- 0.000745     (988.4%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:37 2023
+
+
+FIT:    data read from "complexite_union_arbre.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: h(x)
+	h (x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 8.8761387877e-03   0.00e+00  1.16e-02    1.833189e-07  -7.537362e-05
+   5 7.8989631419e-06  -6.70e-02  1.16e-07    5.515901e-07   5.090274e-04
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 7.89896e-06
+rel. change during last iteration : -6.6953e-07
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00114739
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.31649e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 5.5159e-07       +/- 6.195e-09    (1.123%)
+b               = 0.000509027      +/- 0.0005534    (108.7%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Mon Dec 11 16:33:37 2023
+
+
+FIT:    data read from "complexite_union_tab.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: i(x)
+	i(x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 8.4163006724e-04   0.00e+00  3.48e-02    5.515901e-07   5.090274e-04
+   5 7.1776675353e-05  -2.88e-04  3.48e-07    6.769311e-07  -1.732317e-03
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 7.17767e-05
+rel. change during last iteration : -2.88424e-09
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00345873
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.19628e-05
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 6.76931e-07      +/- 1.867e-08    (2.759%)
+b               = -0.00173232      +/- 0.001668     (96.29%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:20 2023
+
+
+FIT:    data read from "complexite_ajout_arbre.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: l(x)
+	l(x) = (a*x+b) * log (m*x+c)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             m            
+   0 9.0872683066e+12   0.00e+00  5.35e+05    1.000000e+00   1.000000e+00   1.000000e+00   1.000000e+00
+ 499 5.9036919873e-05  -9.77e-01  5.35e-01    1.020343e-07   3.595564e-03   9.987839e-01   2.778199e-04
+
+After 499 iterations the fit converged.
+final sum of squares of residuals : 5.90369e-05
+rel. change during last iteration : -9.77351e-06
+
+degrees of freedom    (FIT_NDF)                        : 4
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00384177
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.47592e-05
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 1.02034e-07      +/- 1.951e-07    (191.2%)
+b               = 0.00359556       +/- 0.02181      (606.5%)
+c               = 0.998784         +/- 2.068        (207.1%)
+m               = 0.00027782       +/- 0.002903     (1045%)
+
+correlation matrix of the fit parameters:
+                a      b      c      m      
+a               1.000 
+b               0.995  1.000 
+c               0.824  0.798  1.000 
+m              -0.999 -0.998 -0.816  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:20 2023
+
+
+FIT:    data read from "complexite_ajout_tab.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: l(x)
+	l(x) = (a*x+b) * log (m*x+c)
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   a             b             c             m            
+   0 4.8914567128e-03   0.00e+00  1.87e-02    1.020343e-07   3.595564e-03   9.987839e-01   2.778199e-04
+ 898 6.5546430535e-06  -7.88e-01  1.87e-05    9.902091e-08   3.937501e-02   9.751657e-01   5.141032e-06
+
+After 898 iterations the fit converged.
+final sum of squares of residuals : 6.55464e-06
+rel. change during last iteration : -7.88107e-06
+
+degrees of freedom    (FIT_NDF)                        : 4
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.0012801
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.63866e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+a               = 9.90209e-08      +/- 2.76e-07     (278.8%)
+b               = 0.039375         +/- 0.5554       (1411%)
+c               = 0.975166         +/- 0.3618       (37.1%)
+m               = 5.14103e-06      +/- 7.365e-05    (1433%)
+
+correlation matrix of the fit parameters:
+                a      b      c      m      
+a               1.000 
+b               0.994  1.000 
+c               0.996  0.999  1.000 
+m              -0.995 -1.000 -0.999  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:21 2023
+
+
+FIT:    data read from "complexite_cons_file.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f(x) = m*x+b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 1.6766626837e+00   0.00e+00  3.26e-01    5.141032e-06   3.937501e-02
+   5 1.3457486535e-05  -4.78e-10  3.26e-06    3.184059e-07   8.992188e-04
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 1.34575e-05
+rel. change during last iteration : -4.78355e-15
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00149764
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.24291e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 3.18406e-07      +/- 8.086e-09    (2.54%)
+b               = 0.000899219      +/- 0.0007223    (80.32%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:21 2023
+
+
+FIT:    data read from "complexite_cons_tab.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: f(x)
+	f (x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 2.1499757344e-03   0.00e+00  2.01e-02    3.184059e-07   8.992188e-04
+   5 4.6081389782e-05  -7.05e-08  2.01e-07    5.263715e-07  -2.928691e-03
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 4.60814e-05
+rel. change during last iteration : -7.04516e-13
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00277132
+variance of residuals (reduced chisquare) = WSSR/ndf   : 7.68023e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 5.26371e-07      +/- 1.496e-08    (2.843%)
+b               = -0.00292869      +/- 0.001337     (45.64%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:21 2023
+
+
+FIT:    data read from "complexite_cons_arbre.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: g(x)
+	g (x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 7.3311159218e-03   0.00e+00  3.33e-02    5.263715e-07  -2.928691e-03
+   4 2.1232141616e-05  -7.76e-02  3.33e-06    1.672323e-07  -1.032382e-04
+
+After 4 iterations the fit converged.
+final sum of squares of residuals : 2.12321e-05
+rel. change during last iteration : -7.75552e-07
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00188114
+variance of residuals (reduced chisquare) = WSSR/ndf   : 3.53869e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 1.67232e-07      +/- 1.016e-08    (6.074%)
+b               = -0.000103238     +/- 0.0009072    (878.8%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:21 2023
+
+
+FIT:    data read from "complexite_union_arbre.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: h(x)
+	h (x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 1.0181688240e-02   0.00e+00  1.06e-02    1.672323e-07  -1.032382e-04
+   5 8.9372989537e-06  -5.14e-03  1.06e-07    5.718601e-07  -8.181288e-04
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 8.9373e-06
+rel. change during last iteration : -5.14312e-08
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00122047
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.48955e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 5.7186e-07       +/- 6.59e-09     (1.152%)
+b               = -0.000818129     +/- 0.0005886    (71.95%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 
+
+
+*******************************************************************************
+Tue Dec 12 13:24:21 2023
+
+
+FIT:    data read from "complexite_union_tab.txt" using 1:2
+        format = x:z
+        #datapoints = 8
+        residuals are weighted equally (unit weight)
+
+function used for fitting: i(x)
+	i(x) = m*x +b
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             b            
+   0 5.7138433217e-04   0.00e+00  3.61e-02    5.718601e-07  -8.181288e-04
+   5 2.4879734062e-05  -1.68e-05  3.61e-07    6.777836e-07  -2.757855e-03
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 2.48797e-05
+rel. change during last iteration : -1.6829e-10
+
+degrees of freedom    (FIT_NDF)                        : 6
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 0.00203633
+variance of residuals (reduced chisquare) = WSSR/ndf   : 4.14662e-06
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = 6.77784e-07      +/- 1.099e-08    (1.622%)
+b               = -0.00275786      +/- 0.0009821    (35.61%)
+
+correlation matrix of the fit parameters:
+                m      b      
+m               1.000 
+b              -0.680  1.000 

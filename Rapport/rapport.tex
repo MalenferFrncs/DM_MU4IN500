@@ -45,7 +45,7 @@
   frame=tb,
   keepspaces=true,
   keywordstyle=\bfseries \color{orange},
-  otherkeywords={module,open,Int32},
+  otherkeywords={module,open,Int32,val},
   language=caml,
   morekeywords={*,...},
   numbers=left,
@@ -93,7 +93,7 @@
 
 \begin{huge}
 {\fontfamily{lmtt}\selectfont
-Implémentation de structures de données de recherche (en OCaml)
+Implémentation de structures de données de recherche (en OCaml)\cite{leroy3ocaml}
 }
 \end{huge}
 
@@ -107,18 +107,18 @@ Master Informatique, Semestre 1, septembre - janvier 2023 - 2024 \\ [1cm]
 \end{titlepage}
 
 
-
+\setcounter{tocdepth}{2}
 \tableofcontents
 
-\newpage
 
-\section{Échauffement}
+\newpage
+ \section{Échauffement}
 Le code correspondant à cette section se trouve dans le fichier \textit{int128.ml}. En plus des fonctions demandées par le sujet, nous y avons ajouté d'autres fonctions utilitaires pour manipuler les entiers 128 dans la suite du projet : 
 
 \begin{description}
 
-\item[\textit{of\_str}] convertit une chaîne de caractères (au format des clés fournies dans le jeu de données aléatoires) en entier 128.
-\item[\textit{to\_str}] convertit un entier 128 bits en une chaîne de caractères (sous le même format).
+\item[\textit{of\_str}] convertit une chaîne de caractère en entier 128.
+\item[\textit{to\_str}] convertit un entier 128 bits en une chaîne de caractères.
 \item[\textit{list\_of\_file}] permet de récupérer une liste d'entiers 128 bits depuis un fichier présentant des clés au bon format.
 \end{description}
 
@@ -128,16 +128,16 @@ OCaml nous donne accès au module Int32, qui permet d'avoir des entiers codés s
 
 \medskip
 
-\bigskip \begin{lstlisting}
+\begin{lstlisting}
 open Int32;;
 type entier128 = (Int32.t * Int32.t * Int32.t * Int32.t);;
 
-\end{lstlisting}
+\end{lstlisting} \medskip
 
 
-Pour implémenter nos prédicats, nous avons choisi d'écrire une fonction compare, qui compare des bits de poids forts vers ceux de poids faible les entiers 32 bits qui composent nos entier 128 bits. Ce choix nous permet de factoriser le code pour nos deux prédicats de comparaison.
+Pour implémenter nos prédicats, nous avons choisi d'écrire une fonction \textit{compare}, qui compare des bits de poids forts vers ceux de poids faible les entiers 32 bits qui composent nos entier 128 bits. Ce choix nous permet de factoriser le code pour nos deux prédicats de comparaison.
 
-\bigskip \begin{lstlisting}
+\medskip \begin{lstlisting}
 let cmp (cle1 : t) (cle2 : t) : int = 
   let (a1, b1, c1, d1) = cle1 and (a2, b2, c2, d2) = cle2 in 
   if a1=a2 then 
@@ -150,27 +150,26 @@ let cmp (cle1 : t) (cle2 : t) : int =
       (Int32.unsigned_compare b1 b2) 
   else 
     (Int32.unsigned_compare a1 a2)
-\end{lstlisting}
+\end{lstlisting} 
 
 \subsection{Le prédicat inf}
 
 Ce prédicat peut être implémenté en vérifiant si le résultat de compare est négatif. Nous avons également implémenté une fonction \textit{inf2}, qui permet de manipuler des clés sous forme de type option.
 
-\bigskip \begin{lstlisting}
+\medskip \begin{lstlisting}
 let inf (cle1 : t) (cle2 : t) : bool = (cmp cle1 cle2) < 0
-
-\end{lstlisting}
+\end{lstlisting} 
 
 \subsection{Le prédicat eg}
 De manière analogue, le prédicat peut être implémenté en vérifiant si le résultat de compare est nul.
 
-\bigskip \begin{lstlisting}
+\medskip \begin{lstlisting}
 let inf (cle1 : int128) (cle2 : int128) : bool = (cmp cle1 cle2) = 0
-\end{lstlisting}
+\end{lstlisting} \medskip
 
 
 
-\section{Structure 1 : Tas priorité min}
+ \section{Structure 1 : Tas priorité min}
 
 Dans cette section, nous allons étudier deux manières d'implémenter des tas minimum : une utilisant une structure de tableau, ce qui est la manière la plus usuelle de représenter les tas minimum, et une utilisant une structure arborescente, permettant d'implémenter nos algorithmes dans un style purement fonctionnel.
 Le code se trouve dans les fichiers \textit{tas\_min\_tab.ml} et \textit{tas\_min\_arbre.ml}. 
@@ -183,11 +182,10 @@ type heapArray = int ref * int ref * (Int128.t option) Array.t;;
 
 (* Noeud of  rang * ndescendants * elt * fg * fd *)
 type  heapTree = E | L of Int128.t | N of int * int *  Int128.t *  heapTree *  heapTree;;
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 Le tas sous forme de tableau est représenté à l'aide de types option, ce qui permet de ne pas devoir le copier dans un tableau plus petit à chaque suppression, mais également de pouvoir l'agrandir d'un étage à chaque fois qu'on atteint la taille limite du tableau (ce qui permet d'éviter de trop faire cette couteuse opération de copie) : on rend possible le fait d'avoir des cases vides dans le tableau. Les deux entiers contenus dans la structure sont des références afin de rester cohérents avec la mutabilité du tableau (on veut pouvoir leur réaffecter de nouvelles valeurs). Dans le tableau, l'arbre est représenté en considérant le lien suivant entre les cases : L'indice d'un père, par rapport à son fils d'indice i est $(i-1)/2$, l'indice du fils droit d'un père i est $2*i +1$, celui de son fils gauche est $2*i+2$.
 
-%mettre le petit dessin ???%
 
 Pour le tas sous forme d'arbre, nous avons choisi de faire un constructeur feuille permettant de savoir facilement, dans nos match, lorsque nous arrivons au bout de l'arbre. Afin de pouvoir naviguer dans l'arbre, il nous est également nécessaire de retenir plusieurs informations sur chaque nœud afin de nous aiguiller lors des ajouts et des suppressions : le rang et le nombre de descendants. Cette manière d'implémenter la structure s'inspire de celle présentée dans \textit{Purely functionnal data structures}, de Chris Okasaki \cite{DataStructure} pour les \textit{Leftist Heaps}, notamment pour la notion de rang, qui est la distance la plus courte d'un nœud vers un nœud vide (en nombre de nœuds). 
 
@@ -211,11 +209,11 @@ Pour notre fonction \textit{Ajout}, on parcourt l'arbre à l'aide du rang pour t
 
 Pour \textit{SupprMin}, on parcourt l'arbre à l'aide du rang et du nombre de descendants pour trouver le dernier nœud ajouté dans le tas, losqu'on la trouvé, on fait remonter l'élément et on fait appel aux fonctions \textit{reeq\_tas\_gauche} et \textit{reeq\_tas\_droite} pour replacer correctement l'élément remonté (toujours le minimum du tas récupéré avec l'appel récursif) dans le tas afin de garder sa propriété minimale
 
-Pour \textit{AjoutsIteratifs}, il suffit de parcourir la liste et d'ajouter ses éléments uns par uns au tas (en commençant avec un tas vide.
+Pour \textit{AjoutsIteratifs}, il suffit de parcourir la liste et d'ajouter ses éléments uns par uns au tas (en commençant avec un tas vide).
 
 \subsection{Construction}
 
-Un algorithme permettant de construire un tas en temps constant a été présentée par l'informaticien Robert W. Floyd en 1964 dans une communication de l'Association for Computing Machinery\cite{ACM}, puis reprise, notamment, par Donald E. Knuth dans \textit{The Art of Computer Programming, Vol. III Sorting and Searching}\cite{Knuth}.
+Un algorithme permettant de construire un tas en temps constant a été présentée par l'informaticien Robert W. Floyd en 1964 dans une communication de l'Association for Computing Machinery\cite{ACM}, puis reprise, notamment, par Donald E. Knuth dans \textit{The Art of Computer Programming, Vol. III Sorting and Searching}\cite{KnuthHeap}.
 
 
 \begin{algorithm}
@@ -246,7 +244,7 @@ Un algorithme permettant de construire un tas en temps constant a été présent
 
 Le principe est donc de d'abord s'assurer de la structure de l'arbre globale (sous forme d'arbre parfait tassé à gauche), puis de partir des feuilles pour "heapify" (faire tas) les sous arbres qui composent le résultat final dans un parcours Bas Haut Droite Gauche.
 
-La forme de cet algorithme s'adapte assez bien au style de programmation fonctionnel dans la mesure où les modifications sont locales à l'arbre étudié au moment où on le heapify.
+La forme de cet algorithme s'adapte assez bien au style de programmation fonctionnel dans la mesure où les modifications sont locales à l'arbre étudié au moment où on le \textit{heapify}.
 
 
 \subsubsection{Implémentation par tableau}
@@ -255,14 +253,15 @@ Pour l'implémentation par tableau, il nous suffit de convertir la liste en tabl
 
 \subsubsection{Implémentation par arborescence}
 
-Pour l'arborescence, bien que les appels à heapify soient assez simples à situer (dès qu'on créé un nouvel arbre tassé à gauche, on le heapify, ce qui forme alors bien un tas, qu'on peut retourner), la question de créer un arbre parfait tassé à gauche depuis une liste est moins évidente.
+Pour l'arborescence, bien que les appels à \textit{heapify} soient assez simples à situer (dès qu'on créé un nouvel arbre tassé à gauche, on le heapify, ce qui forme alors bien un tas, qu'on peut retourner), la question de créer un arbre parfait tassé à gauche depuis une liste est moins évidente.
 
-Pour résoudre ce problème, nous utilisons le fait qu'à un nombre d'éléments donné, il n'y a qu'une seule forme d'arbre parfait tassé à gauche possible : il nous est possible donc, de savoir, pour un nœud donné, en fonction de la taille qui a été passée en argument, de savoir la taille de sa descendance droite et de sa descendance gauche : on peut alors faire deux appels récursifs demandant cette taille de tas pour obtenir deux fils aux tailles souhaitées : de là, il nous suffit de les combiner avec un nouvel élément tiré de la liste passée en argument, puis de faire appel à heapify sur notre nouveau nœud, pour obtenir un tas minimal de la taille souhaitée.
+Pour résoudre ce problème, nous utilisons le fait qu'à un nombre d'éléments donné, il n'y a qu'une seule forme d'arbre parfait tassé à gauche possible : il nous est possible donc, de savoir, pour un nœud donné, en fonction de la taille qui a été passée en argument, de savoir la taille de sa descendance droite et de sa descendance gauche : on peut alors faire deux appels récursifs demandant cette taille de tas pour obtenir deux fils aux tailles souhaitées : de là, il nous suffit de les combiner avec un nouvel élément tiré de la liste passée en argument, puis de faire appel à \textit{heapify} sur notre nouveau nœud, pour obtenir un tas minimal de la taille souhaitée.
 
-La fonction construction consiste alors à récupérer la taille de la liste, puis faire un appel à \textit{make\_tas}.
+La fonction \textit{construction} consiste alors à récupérer la taille de la liste, puis faire un appel à \textit{make\_tas}.
 
 \bigskip \begin{lstlisting}
-let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t list)= 
+let rec make_tas (li : Int128.t list) (taille : int) :  
+	(heapTree * Int128.t list )= 
   if taille = 0 || taille < 0 then (E,li)
   else if taille = 1 then
     (*Cas d'arret : on veut faire un tas de taille 1, on renvoie une feuille du 1er element de la liste et le reste *)
@@ -284,9 +283,9 @@ let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t lis
       in
       let nb_elem_droite = (((two_pow (hauteur_prec+1)) -1)/2) + (reste - ((two_pow hauteur)/2))
       in
-      (*meme principe que dans l'autre cas, mais avec d'autres nombres d'elements *)
+      (*meme principe que dans l'autre cas, mais avec les nombres d'elements calcules ici *)
 
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 
 \subsection{Union}
@@ -295,7 +294,7 @@ Pour réaliser l'union en temps linéaire de deux tas, il suffit de mettre tous 
 
 \subsubsection{Implémentation par tableau}
 
-On fait la concaténation des deux tableaux avec la primitive du module \textit{Array} \textit{Array.append}, sur laquelle on reprend le même fonctionnement que pour construction (on remonte depuis les feuilles pour heapify les nœuds sur le chemin vers la racine).
+On fait la concaténation des deux tableaux avec la primitive du module \textit{Array} \textit{Array.append}, sur laquelle on reprend le même fonctionnement que pour construction (on remonte depuis les feuilles pour \textit{heapify} les nœuds sur le chemin vers la racine).
 
 
 \subsubsection{Implémentation par arbre}
@@ -331,13 +330,13 @@ De même que pour l'ajout, on fait des opérations en O(1) sur le tableau pour l
 \subsubsection{Ajouts itératifs}
 
 Dans nos deux implémentations, on itère sur une liste de taille n en faisant n ajouts chacun en $O( log (n))$, on a bien une complexité théorique majorée par $O(n log(n))$.
-\newpage
 \subsubsection{Construction}
 
 Dans l'article \textit{An Average Case Analysis of Floyd's Algorithm to Construct Heaps}\cite{Doberkat}, Ernst E. Doberkat nous présente une analyse de la complexité de l'algorithme de Floyd, sur laquelle nous allons nous baser.
 
 Posons $h$ la hauteur du tas, c'est à dire qu'il contient des niveaux allant de $0$ à $h - 1$. Dans le pire des cas, chaque opération bubble down (effectuée une fois pour chaque nœud) va se faire sur la distance du nœud aux feuilles, c'est à dire $h - 1 - h(x)$, où $h(x)$ est la hauteur relative du nœud x par rapport à la racine.
 
+\newpage
 Le coût total pour tous les nœuds est donc majoré par 
 
 \begin{align}
@@ -390,7 +389,7 @@ let time_of (f : 'a -> 'b) (arg : 'a): float =
   let _ = f arg in
   let fin = Sys.time() in
   fin -. debut
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 Nous avons compilé notre code avec \textit{ocamlopt} pour réaliser ces tests. Les jeux de données se trouvent dans \textit{src/jeux\_de\_données} et sont ceux fournis par le sujet. Les courbes sont tracées à l'aide de gnuplot, les commandes se trouvent dans \textit{tests/graphiques.gnu}.
 
@@ -398,7 +397,7 @@ La taille de nos tas varie ainsi de 1000 à 200000 clés (sous forme d'entiers 1
 
 Afin de vérifier que nos temps mesurés correspondent à nos complexités théoriques, nous avons utilisé l'outil fit fourni par gnuplot, qui permet d'adapter les coefficients d'une fonction afin de la faire approximer la courbe obtenue avec nos mesures expérimentales. Des écarts peuvent être à noter et son explicables par l'aléa dans nos mesures, mais aussi le fait que nous faisons pour chaque taille une moyenne sur 5 itérations.
 
-\subsection{\textit{ajouts\_iteratifs}}
+\subsubsection{Ajouts\_iteratifs}
 
 La complexité théorique de l'ajout itératif étant en $O(n log n)$, nous avons utilisé la fonction suivante pour l'ajuster à nos courbes avec les paramètres a,b,c et m : 
 
@@ -406,7 +405,7 @@ $$
 l(x) = (a x +b) \times log (mx +c)
 $$
 
-\subsubsection{Tas implémenté avec un tableau}
+\subparagraph{Tas implémenté avec un tableau}
 
 Nous obtenons la courbe et les paramètres pour la régression suivants : 
 
@@ -424,14 +423,15 @@ Erreur asymptotique & +/- 2.464e-08 & +/- 0.001292 & +/- 5.662  & +/- 0.0006119\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/regression_ajout_iteratif_tab.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/regression_ajout_iteratif_tab.png}
 \caption{Mesure du temps pris par l'ajout itératif, tas sous forme de tableau}
+\label{fig1}
 \end{figure}
 
-En observant la correspondance, il apparaît que l'ajout itératif sur le tableau semble être en $O(n log n)$.
+En observant la correspondance(\ref{fig1}), il apparaît que l'ajout itératif sur le tableau semble être en $O(n log n)$.
 
 
-\subsubsection{Tas implémenté avec une arborescence}
+\subparagraph{Tas implémenté avec une arborescence}
 
 Nous obtenons la courbe et les paramètres pour la régression suivants : 
 
@@ -453,16 +453,17 @@ Erreur asymptotique & +/- 5.828e-08 & +/- 0.0006326 & +/- 4.284e+10   & +/- 1.27
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/regression_ajout_iteratif_arbre.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/regression_ajout_iteratif_arbre.png}
 \caption{Mesure du temps pris par l'ajout itératif, tas sous forme d'arbre}
+\label{fig2}
 \end{figure}
 
-Notons ici que la régression linéaire est moins alignée avec nos différents points, mais la correspondance peut néanmoins nous faire considérer que l'ajout itératif implémenté par arborescence semble être en $O(n log n)$.
+Notons ici (\ref{fig2}) que la régression linéaire est moins alignée avec nos différents points, mais la correspondance peut néanmoins nous faire considérer que l'ajout itératif implémenté par arborescence semble être en $O(n log n)$.
 
 
 
 
-\subsection{\textit{construction}}
+\subsubsection{Construction}
 
 La complexité théorique de la fonction de construction, comme montré précédemment, est en $O(n)$, nous avons donc utilisé la fonction suivante pour l'ajuster à nos courbes avec les paramètres m et b : 
 
@@ -470,7 +471,7 @@ $$
 f(x) = mx +b
 $$
 
-\subsubsection{Tas implémenté avec un tableau}
+\subparagraph{Tas implémenté avec un tableau}
 
 Nous obtenons la courbe et les paramètres pour la régression suivants : 
 
@@ -488,14 +489,15 @@ Erreur asymptotique & +/- 1.284e-08 & +/- 0.001147  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_cons_tab_regression.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_cons_tab_regression.png}
 \caption{Mesure du temps pris par la construction, tas sous forme de tableau}
+\label{fig3}
 \end{figure}
 
-En observant la correspondance, il apparaît que la construction avec des tas implémentés par un tableau semble être en $O(n)$.
+En observant la correspondance (\ref{fig3}), il apparaît que la construction avec des tas implémentés par un tableau semble être en $O(n)$.
 
 
-\subsubsection{Tas implémenté avec une arborescence}
+\subparagraph{Tas implémenté avec une arborescence}
 
 Nous obtenons la courbe et les paramètres pour la régression suivants : 
 
@@ -514,16 +516,17 @@ Erreur asymptotique & +/- 3.17e-09 & +/- 0.0002832  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_cons_arbre_regression.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_cons_arbre_regression.png}
 \caption{Mesure du temps pris par la construction, tas sous forme d'arbre}
+\label{fig4}
 \end{figure}
 
-En observant la correspondance, il apparaît que la construction avec des tas implémentés par une arborescence semble être en $O(n)$.
+En observant la correspondance (\ref{fig4}), il apparaît que la construction avec des tas implémentés par une arborescence semble être en $O(n)$.
 
 
 
 
-\subsection{Vérification graphique pour l'union}
+\subsubsection{Vérification graphique pour l'union}
 
 La complexité théorique de la fonction de l'union, comme montré précédemment, est en $O(n + m )$, nous avons donc utilisé la fonction suivante pour l'ajuster à nos courbes avec les paramètres m et b ( $x = n+m $): 
 
@@ -536,7 +539,7 @@ Pour nos jeux de tests, nous avons décidé de faire fixer à chaque fois l'unio
 Notons également d'une rapide vérification avec la commande unix diff nous a permis de nous assurer que dans nos jeux de clés de même taille, il n'y avait aucune répétitions.
 
 
-\subsubsection{Tas implémenté avec un tableau}
+\subparagraph{Tas implémenté avec un tableau}
 
 Nous obtenons la courbe et les paramètres pour la régression suivants : 
 
@@ -555,14 +558,15 @@ Erreur asymptotique & +/- 7.759e-09 & +/- 0.000693  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_union_tab_regression.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_union_tab_regression.png}
 \caption{Mesure du temps pris par l'union, tas sous forme de tableau}
+\label{fig5}
 \end{figure}
 
-En observant la correspondance, il apparaît que l'union avec des tas implémentés par un tableau semble être en $O(n)$.
+En observant la correspondance (\ref{fig5}), il apparaît que l'union avec des tas implémentés par un tableau semble être en $O(n)$.
 
 
-\subsubsection{Tas implémenté avec une arborescence}
+\subparagraph{Tas implémenté avec une arborescence}
 
 Nous obtenons la courbe et les paramètres pour la régression suivants : 
 
@@ -581,11 +585,12 @@ Erreur asymptotique & +/- 6.106e-09 & +/- 0.0005454  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_union_arbre_regression.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_union_arbre_regression.png}
 \caption{Mesure du temps pris par l'union, tas sous forme d'arbre}
+\label{fig6}
 \end{figure}
 
-En observant la correspondance, il apparaît que l'union avec des tas implémentés par une arborescence semble être en $O(n)$.
+En observant la correspondance (\ref{fig6}), il apparaît que l'union avec des tas implémentés par une arborescence semble être en $O(n)$.
 
 
 \subsection{Conclusion sur cette partie}
@@ -598,11 +603,11 @@ Grâce à l'implémentation purement fonctionnelle sous forme d'arbre, nous avon
 
 Nous avons également pu étudier une manière moins naïve de construire un tas minimal grâce à l'algorithme de Robert Floyd\cite{ACM}, ainsi qu'une approche plus poussée de la complexité au pire cas sur des tas minimum.
 
-\section{File binomiale}
+\newpage
+ \section{File binomiale}
 
-%TODO raconter la base des bases sur ce qu'est une file binomiale
 Dans cette section, nous allons étudier l'implémentation en OCaml d'une file binomiale\cite{TasBinom}, et ce dans un style purement fonctionnel, ce qui s'accorde assez bien avec la structure.
-Le code se trouve dans le fichier \textit{src/file\_binomiale}. 
+Le code se trouve dans le fichier \textit{src/file\_binomiale}. Nous avons également ajouté une fonction \textit{to\_dot} permettant d'obtenir une représentation graphique de nos files binomiales, des exemples se trouvent dans \textit{Images/graphes}.
 
 \subsection{Primitives et structure}
 
@@ -613,35 +618,24 @@ Nous définissions sa structure, en OCaml, à l'aide de deux types récursifs :
 type tournois_b = Racine of int * Int128.t * (tournois_b list)  | Empty 
 (*File(indice,tournois) tournois le plus petit a droite de la liste *) 
 type file_b = File of int * (tournois_b list) | Empty 
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 Nous définissons également les primitives suivante (leur code se trouve dans le fichier \textit{src/file\_binomiale.ml} :
 
 \bigskip \begin{lstlisting}
 let est_vide_t (t : tournois_b) : bool = (*...*)
-
 let degree (t:tournois_b) : int = (*...*)
-
 let union2Tid (t1:tournois_b) (t2:tournois_b) : tournois_b = (*...*)
-
 let rec  pow_2 (n:int) : int = (*...*)
-
 let rec tournois_reverse (ol : tournois_b list ) (nl : tournois_b list): tournois_b list = (*...*)
-
 let decapiter (t: tournois_b) : file_b = (*...*)
-
 let file(t:tournois_b) : file_b = (*...*)
-
 let est_vide_f (f: file_b ) : bool = (*...*)
-
 let rec last_tournois  (li : tournois_b list) : tournois_b = (*...*)
-
 let mindeg (f:file_b) : tournois_b = (*...*)
-
 let reste (f:file_b) : file_b = (*...*)
-
 let ajout_min (t:tournois_b) (f:file_b) : file_b = (*...*)
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 \subsection{Fonctions fondamentales}
 Nous avons implémenté les fonctions fondamentales de manipulation d'une file binomiale conformément à leur définition dans le cours. L'implémentation étant assez transparente vis à vis du style fonctionnel utilisé en OCaml, nos fonctions sont assez transparentes avec les algorithmes sous-jacents.
@@ -674,10 +668,10 @@ let rec unionFile (f1:file_b) (f2:file_b) : file_b =
     	(*Meme principe, mais en prenant la retenue en compte*)
   in
   uFret f1 f2 Empty
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 
-\subsubsection{\textit{Suppr\_min}}
+\subsubsection{Suppr\_min}
 
 Pour supprimer le minimum, dans le cas où la file binomiale n'est pas vide, on utilise la fonction auxiliaire \textit{get\_min} qui nous permet d'obtenir une liste de tournois sans le minimum, ainsi que le tournois contenant le minimum. Il suffit alors de faire une union de la file binomiale sans le tournoi minimum, et le tournoi minimum privé de son élément minimal (qui est à sa tête).
 
@@ -693,7 +687,7 @@ let suppr_min (f:file_b) : file_b =
       let list_sans_min,tournois_min = get_min tournois cle in 
       (unionFile (File((indice - (pow_2  (degree tournois_min) )),list_sans_min)) (decapiter tournois_min))
       (* union entre la file privee de son tournoi min et de la file produite par le tournois min decapite*)
-\end{lstlisting}
+\end{lstlisting} \bigskip
 \subsubsection{Ajout}
 
 Pour réaliser l'ajout, il suffit de créer un tournoi contenant un tas binomial de degré 0 contenant l'élément à ajouter et de faire l'union avec la file binomiale passée en argument 
@@ -703,7 +697,7 @@ let ajout (x:Int128.t) (f:file_b) : file_b =
   let tx : tournois_b = Racine(0,x,Empty::[]) in
   let fx : file_b = file tx in
   unionFile f fx 
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 \subsubsection{Construction}
 On fait simplement des ajouts sucessifs dans la file qu'on créé :
@@ -715,7 +709,7 @@ let rec construction (liste_cles : Int128.t list): file_b =
     | hd::tl -> (loop tl (ajout hd file_bino))
   in
   loop liste_cles Empty
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 
 \subsection{Vérification graphique de la complexité de construction}
@@ -723,12 +717,13 @@ Ces expérimentations; et celles de la section suivante ont été faites selon l
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_binomiale.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_binomiale.png}
 \caption{Mesure du temps pris par la construction, file binomiale}
+\label{fig7}
 \end{figure}
 
 
-La courbe obtenue expérimentalement semble confirmer notre complexité linéaire théorique.
+La courbe (\ref{fig7}) obtenue expérimentalement semble confirmer notre complexité linéaire théorique.
 
 \subsection{Vérification graphique de la complexité de union}
 
@@ -736,35 +731,37 @@ La complexité théorique de l'union de deux files binomiales est $O(log (n))$. 
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/cplxt_union_file.png}
+\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_union_file.png}
 \caption{Mesure du temps pris par l'union de deux files binomiales de taille égale (en abscisse)}
+\label{fig8}
 \end{figure}
 
 
-L'allure de la courbe semble bien nous indiquer une complexité en $O(log (n))$.
+L'allure de la courbe (\ref{fig8}) semble bien nous indiquer une complexité en $O(log (n))$.
 
 
 \subsection{Conclusion sur cette partie}
 
 L'implémentation d'une structure de file binomiale se fait assez aisément en OCaml du fait de sa forme arborescente, nous avons pu ainsi implémenter cette structure et vérifier expérimentalement que nos fonctions s'approchaient des complexités théoriques souhaitées.
 
-\section{Hachage}
+ \section{Hachage}
 
-    Nous avons choisi d'implémenter la fonction de hachage MD5\cite{md5} choisit d'aussi implementer le haschage MD5 en OCaml. Nous aurions également pu utiliser un langage de plus bas niveau tel que le C permettant de manipuler simplement nos valeurs, mais nous avons préféré garder la cohérence du langage utilisé dans le projet plutôt que de faire de l'intégration\footnote{Notons que c'est ce choix qui a été fait dans la libraire standard de OCaml pour implémenter ces fonctions...} 
+    Nous avons également choisi d'implémenter le hachage MD5\cite{md5} en OCaml. Nous aurions également pu utiliser un langage de plus bas niveau tel que le C permettant de manipuler simplement nos valeurs, mais nous avons préféré garder la cohérence du langage utilisé dans le projet plutôt que de faire de l'intégration\footnote{Notons que c'est cet autre choix qui a été fait dans la libraire standard de OCaml pour implémenter ces fonctions...} 
 
-    \subsection{représentation des valeurs}
+    \subsection{Représentation des valeurs}
 
     Nous avons choisit d'avoir comme entrée un argument de type string qu'on convertit ensuite en une liste de tableau de 16 entiers 32 bits. 
     Nous faisons ce choix car le MD5 travaille sur des blocs de 512 bits soit 16 entier 32 bits. A chaque tour de l'algorithme Nous travaillons donc sur un seul élément de cette liste de tableaux.
 
-    \subsection{4.2 traitement du messages} 
-    \subsubsection{transformation de la chaîne }
+    \subsection{Traitement du messages} 
+    \subsubsection{Transformation de la chaîne }
     
     Pour transformer notre string en int32 nous utilisons une fonction du module String qui permet de décoder bit a bit des int32 depuis des string :
     
-\bigskip \begin{lstlisting}
+\bigskip 
+\begin{lstlisting}
     val get_int32_le : string -> int -> int32
-\end{lstlisting}  
+\end{lstlisting} \bigskip  
 
     Cette fonction prend la chaîne et l'indice de début de l'entier a décoder en argument et renvoie une erreur si il reste moins de 32 bit a décoder (moins de 4 caractères).
 
@@ -777,7 +774,8 @@ L'implémentation d'une structure de file binomiale se fait assez aisément en O
 
     \subsubsection{implémentation du md5}
     
-    Nous implémentons la fonction de hachage md5 en suivant l'algorithme classique. Nous avons également ajouté une fonction finish.
+    Nous implémentons la fonction de hachage md5 en suivant l'algorithme classique. Nous avons également ajouté une fonction finish. Nous exécutons cette fonction sur les 4 int32 qui compose le int128 renvoyé par la boucle du md5 elle permet d'inverser les octets de l'entier, ici pour le ramener en little endian.
+    
 \bigskip \begin{lstlisting}
 let finish (entre : int32) : int32 =
   let res = 0l in
@@ -787,21 +785,20 @@ let finish (entre : int32) : int32 =
   let res = Int32.logor res (Int32.shift_right_logical (Int32.logand entre 0xFF000000l) 24) in 
   res
 ;;
-\end{lstlisting} 
+\end{lstlisting} \bigskip 
 
-    Nous exécutons cette fonction sur les 4 int32 qui compose le int128 renvoyé par la boucle du md5 elle permet d'inverser les octets de l'entier, ici pour le ramener en little endian.
-
-
+    
 \subsection{Conclusion sur cette partie}
 
 Par cette manipulation fine des bits composant une chaîne de caractère, nous parvenons ainsi à hacher les chaînes passées en entrée pour obtenir des clés, ce qui nous permettra de transformer des textes pour en faire des listes de jeux de clé 128 bits, afin de tester les structures vues précédemment.
 
-\section{Arborescence de Recherche}
+\newpage
+ \section{Arborescence de Recherche}
 
 
-Nous souhaitons dans cette partie implémenter une structure arborescente de recherche, avec la condition que la recherche dedans se fasse en un temps moyen de $log(n)$. Nous avons choisi comme structure répondant à cette condition un arbre 2-3-4, dans la mesure où la complexité des opérations d'ajout et de recherche sont en $O(log (n))$, et que son implémentation est plutôt facilitée dans le langage OCaml. 
+Nous souhaitons dans cette partie implémenter une structure arborescente de recherche, avec la condition que la recherche dedans se fasse en un temps moyen de $log(n)$. Nous avons choisi comme structure répondant à cette condition un arbre 2-3-4\cite{234tree}, dans la mesure où la complexité des opérations d'ajout et de recherche sont en $O(log (n))$, et que son implémentation est plutôt facilitée dans le langage OCaml. 
 
-Le code complet de cette section se trouve dans \textit{src/lib/arbre\_234.ml}.
+Le code complet de cette section se trouve dans \textit{src/lib/arbre\_234.ml}. Nous avons également ajouté une fonction \textit{to\_dot} permettant d'obtenir une représentation graphique de nos files binomiales, des exemples se trouvent dans \textit{Images/graphes}.
 
 \subsection{Définition de la structure}
 Un arbre 2-3-4 est une structure arborescente de recherche définie comme suit :
@@ -814,7 +811,7 @@ type arbre234 =
   | Noeud2 of Int128.t * arbre234 * arbre234 
   | Noeud3 of Int128.t * Int128.t * arbre234 * arbre234 * arbre234 
   | Noeud4 of Int128.t * Int128.t * Int128.t * arbre234 * arbre234 * arbre234 * arbre234 
-\end{lstlisting}
+\end{lstlisting} \bigskip 
 
 Un $i-Noeud$ a $i$ fils et $i - 1$ clés, une $i-Feuille$ a $i$ clés. Notons qu'ici, les types sommes de OCaml nous permettent d'économiser l'espace, habituellement perdue en programmation en style impératif avec changement d'états, car nous ne stockons que le nombre de clés du i-Noeud dans chacun de nos constructeurs (et pas 3 en attendant de les remplir dans des structures mutables). 
 
@@ -828,7 +825,7 @@ Afin d'ajouter des clés à notre structure, nous avons utilisé un mécanisme p
 
 \bigskip \begin{lstlisting}
 exception Eclatement of (Int128.t * (arbre234) * (arbre234)) ;;
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 Cette dernière est levée,  lorsqu'on cherche à ajouter une clé soit à une 2-Feuille, soit à un 4-Nœud. Dans ce cas là, on va faire remonter l'élément "central" dans nos 3 (resp. 4) clés selon l'ordre défini sur ces dernières avec pour fils deux sous-arbres correspondant à ce qu'il reste du nœud après éclatement.
 
@@ -869,7 +866,7 @@ let ajout (cle : Int128.t) (t : arbre234) : arbre234 =
   in 
   match t with 
   (*Gestion des cas de base*)
-\end{lstlisting}
+\end{lstlisting} \bigskip
 
 \subsection{Recherche dans l'arbre}
 La recherche se fait alors en suivant à chaque nœud le chemin selon l'encadrement des clés du nœud, puisque la hauteur d'un arbre 234 est en $O(log(n))$, la recherche l'est aussi, puisqu'on ne parcourt qu'une branche ayant une longueur en $O(log (n))$.
@@ -879,9 +876,121 @@ La recherche se fait alors en suivant à chaque nœud le chemin selon l'encadrem
 
 Grâce à la structure des arbres 234, nous avons un moyen de stocker des clés, et de vérifier plutôt rapidement si elles y appartiennent, ce qui nous sera utile, combiné à notre fonction de hachage implémentée précédemment, afin d'établir une liste de clés unique pour un ensemble de textes données.
 
-\section{Étude expérimentale}
+ \section{Étude expérimentale}
+
+\subsection{Extraire la liste de mots}
+
+Le code de cette sous section se trouve dans \textit{tests/liste\_mots.ml}. Une fonction sert à fabriquer 
+
+Afin d'établir cette liste, nous utilisons la structure d'arbre définie dans la section précédente ainsi que la fonction de hachage de la section 4.
+
+Une fonction auxiliaire nous permet d'ajouter à un accumulateur tous les mots d'un fichier à une liste en vérifiant qu'ils ne sont pris qu'une seule fois en les stockant au fur et à mesure dans un arbre de recherche. Nous avons également choisi de filtrer les mots apparaissant dans des didascalies ( '[' ou ']' apparaissant dans la ligne dans le fichier) afin de ne pas les compter deux fois.
+
+Par un parcours de tous les fichiers du dossier grâce à la fonction \textit{readdir} du module \textit{Sys}, nous parvenons à ajouter à notre accumulateur tous les mots des différentes œuvres de façon unique. L'ajout se faisant en tête en OCaml, il nous suffit de renverser la liste à la fin afin d'avoir le premier mot en tête de liste et le bon ordre pour les autres.
+
+La liste ainsi obtenue est composée de 22933 mots uniques\footnote{Nous avons fait le choix d'opter pour la cohérence vis à vis des données étudiées et de considérer que, par exemple, "[the" et "the" sont le même mot, en ne faisant pas ce filtrage, nous obtenons 23086 mots.} qui constitueront notre jeu de tests final pour nos structures. Afin de faciliter son utilisation, nous produisons directement une liste de clés de 128 bits obtenues grâce au hachage des mots. 
+
+\subsection{Collisions par notre fonction de hachage sur l'échantillon}
 
 
+Nous faisons la supposition que la fonction de hachage md5 est uniforme, en appliquant la formule du paradoxe des anniversaires, nous pouvons calculer la probabilité qu'il y ait des collisions pour les mots de notre texte :
+
+\begin{align}
+\mathbb{P} &= 1 - \prod_{i = 0}^{n -1} ( 1 - \frac{i}{m})\\
+&= 1 - exp \prod_{i = 0}^{n -1} ln( 1 - \frac{i}{m})\\
+&\approx 1 - e^{-\frac{n^2}{2m}}
+\end{align}
+
+En considérant m le nombre de valeurs possibles et n le nombre de valeurs à hacher, appliqués à notre cas, à savoir, dans le cas le plus extrême, les mots de la langue anglaise, on a :
+
+\begin{itemize}
+\item $m = 2^{128}$ (nombre de clés possibles codées sur 128 bits)
+\item $n \approx 271000$ (nombre de mots de la langue anglaise)
+\end{itemize}
+
+On a alors 
+$$\mathbb{P}\approx 1 - e^{-\frac{7,3441\times10^{10}}{2^{129}}} \approx 1,0791\times10^{-28}$$,
+
+Cette probabilité étant très faible, alors que la supposition que Shakespeare a utilisé tous les mots de la langue anglaise est assez large, nous considérons qu'il n'y a pas de collisions.
+
+\subsection{Comparaison de nos structures sur le jeu de données obtenu}
+
+Le code de cette sous section se trouve dans \textit{tests/experimentation\_Shakespeare.ml}. Nous utilisons les fonctions du module \textit{Liste\_mots} afin d'obtenir la liste servant aux jeux de tests. Une fonction de formatage pour nos complexités a été ajoutée à \textit{manipulation\_fichiers.ml} pour faciliter l'écriture de nos mesures dans un fichier .txt pour utiliser gnuplot dessus.
+
+\subsubsection{Construction}
+
+Pour mesurer le temps pris pour chaque structure par la construction, nous utilisons la liste complète.
+
+Nous obtenons les temps suivants :
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_construction_shakespeare.png}
+\caption{Temps pris par la construction du jeu de données pour nos différentes structures}
+\label{fig9}
+\end{figure}
+
+On remarque (\ref{fig9}) alors que le tas par arbre est légèrement plus efficace que par tableau, la file binomiale est significativement plus lente. Le léger avantage de l'arbre pourrait s'expliquer par le fait que manipuler un tableau de si grande taille n'est pas le plus optimal avec OCaml, vis à vis d'une structure purement fonctionnelle.
+
+
+\subsubsection{Union}
+
+Pour l'union, nous avons choisi de séparer notre liste en deux de manière aléatoire (une chance sur deux d'aller à gauche ou à droite avec \textit{Random.bool()} grâce à la fonction \textit{partition} du module \textit{List}. On souhaite ainsi obtenir deux structures où la répartition se rapprocherait du cas où on voudrait simplement fusionner deux tas sans avoir aucune propriété définie sur leur taille ou leur contenu (ordre des clés, taille, etc).
+
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_union_shakespeare.png}
+\caption{Temps pris par l'union pour nos différentes structures}
+\label{fig10}
+\end{figure}
+
+On remarque alors deux choses (\ref{fig10}): 
+
+\subparagraph{Le tas par arbre est plus lent que par tableau}, ce qui peut s'expliquer par le fait qu'on re-créé deux listes à partir de nos deux tableaux en $n+m$ opérations avant d'appliquer construction (en $O(n+m)$), là où pour le tableau, on utilise la fonction append qui nous permet directement d'avoir une forme d'arbre parfait tassé à gauche où utiliser l'algorithme de construction présenté en section 2.2.
+
+\subparagraph{L'union par file "n'apparaît pas" dans notre histogramme} : en effet, le temps pris par l'union sur une file binomiale est beaucoup plus rapide que sur un tas ($O(log n)$), le temps mesuré est alors négligeable vis à vis des deux autres.
+
+\subsubsection{Suppression du minimum}
+Pour la suppression du minimum, nous le faisons sur les structures construites avec la fonction \textit{construction}.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_suppr_shakespeare.png}
+\caption{Temps pris par la fonction \textit{supprMin} sur nos différentes structures}
+\label{fig11}
+\end{figure}
+
+
+Le temps pris par le tas sous forme de tableau ou sous forme d'arbre est équivalent, mais la suppression est plus rapide avec une file binomiale (\ref{fig11}).
+
+\subsubsection{Ajout}
+
+Pour mesurer le temps pris par l'ajout, nous avons choisi de construire nos structures avec le jeu de clés, en retirer le minimum, puis l'ajouter à nouveau : cela nous permet de mesurer un pire cas pour nos tas puisqu'ajouter l'élément minimum nous garantit de faire le plus d'échanges possibles étant donné que nous l'ajoutons aux feuilles du tas, et que pour respecter sa propriété minimum, l'algorithme va le remonter jusqu'à la racine.
+
+\begin{figure}[hbtp]
+\centering
+\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_ajout_shakespeare.png}
+\caption{Temps pris par la fonction \textit{ajout} sur nos différentes structures}
+\label{fig12}
+\end{figure}
+
+On remarque que le tas par arbre est légèrement plus rapide que le tas par tableau (\ref{fig12}). Cependant, la file binomiale reste plus rapide.
+
+
+\subsection{Conclusion sur cette partie}
+
+Ainsi, grâce aux jeux de données établi depuis des données réelles (les œuvres de Shakespeare), nous avons pu confronter nos différentes structures sur leurs fonctions de manipulation usuelles (construction, union, suppression du minimum et ajout). Il en ressort qu'aucune n'est meilleure que les autres sur toutes ces opérations, en revanche, hormis la construction, la file binomiale semble plus efficace en terme de temps.
+
+ \section{Conclusion sur le devoir de programmation}
+Ce devoir nous auras ainsi permis d'une part d'étudier la manière dont on peut implémenter des algorithmes étudiés en cours sous forme de pseudo code, et donc de voir quelles adaptations sont parfois nécessaires pour une mise en œuvre effective sur machine.
+
+L'utilisation du langage OCaml nous a également permis de réfléchir à la manière dont le paradigme de programmation utilisé influence la manière dont une structure et un algorithme seront implémentés.  Plus précisément, étudier une représentation, non usuelle, des tas sous forme arborescente nous a permis d'étudier comment adapter de manière purement fonctionnelle une structure de données dont le principe d'implémentation classique est très impératif.
+
+Les études expérimentales nous ont permis d'étudier le temps réel pris par nos algorithmes et de voir que ce dernier s'approchait des complexités théoriques calculées.
+
+Les trois dernières parties nous ont permis d'étudier comment mettre en place un jeu de données tiré d'exemples réels afin de comparer l'efficacité de nos différentes structures sur des manipulations usuelles. La réalisation de ces expériences nous a alors montré qu'il n'y a pas de structures parfaites étant meilleure sur toutes les opérations : le choix d'une structure plutôt qu'une autre pour répondre à un problème doit avant tout être fait en fonction de quelle opération sera le plus souvent effectuée. 
 
 
 
@@ -890,7 +999,6 @@ Grâce à la structure des arbres 234, nous avons un moyen de stocker des clés,
 \addcontentsline{toc}{section}{Bibliographie}
 \bibliography{biblio.bib}
 \bibliographystyle{plain}
-\nocite{*}
 
 
 \end{document}
