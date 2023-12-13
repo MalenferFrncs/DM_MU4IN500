@@ -70,5 +70,10 @@
 \contentsline {subsubsection}{\numberline {6.3.3}Suppression du minimum}{22}{subsubsection.6.3.3}%
 \contentsline {subsubsection}{\numberline {6.3.4}Ajout}{22}{subsubsection.6.3.4}%
 \contentsline {subsection}{\numberline {6.4}Conclusion sur cette partie}{23}{subsection.6.4}%
-\contentsline {section}{\numberline {7}Conclusion sur le devoir de programmation}{23}{section.7}%
-\contentsline {section}{Bibliographie}{24}{section.7}%
+\contentsline {section}{\numberline {7}Conclusion sur le devoir de programmation}{24}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Comment exécuter le code}{24}{subsection.7.1}%
+\contentsline {subparagraph}{Obtenir des représentations graphiques de nos structures}{24}{section*.18}%
+\contentsline {subparagraph}{Mesurer le temps pris par nos fonctions}{24}{section*.19}%
+\contentsline {subparagraph}{Expérimentation sur l'œuvre de Shakespeare}{24}{section*.20}%
+\contentsline {subsection}{\numberline {7.2}Bilan}{24}{subsection.7.2}%
+\contentsline {section}{Bibliographie}{25}{subsection.7.2}%

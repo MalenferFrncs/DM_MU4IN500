@@ -983,7 +983,24 @@ On remarque que le tas par arbre est légèrement plus rapide que le tas par tab
 
 Ainsi, grâce aux jeux de données établi depuis des données réelles (les œuvres de Shakespeare), nous avons pu confronter nos différentes structures sur leurs fonctions de manipulation usuelles (construction, union, suppression du minimum et ajout). Il en ressort qu'aucune n'est meilleure que les autres sur toutes ces opérations, en revanche, hormis la construction, la file binomiale semble plus efficace en terme de temps.
 
+\newpage
+
  \section{Conclusion sur le devoir de programmation}
+ 
+
+\subsection{Comment exécuter le code}
+
+Pour effectuer les tests, il suffit d'ouvrir un terminal dans le répertoire \textit{test/}.
+
+\subparagraph{Obtenir des représentations graphiques de nos structures} : la commande \textit{make test\_graphique} permet la création des images grâce au langage dot (dans \textit{Images/graphes}. La variable {\scriptsize\textit{VAL\_TEST\_GRAPHIQUE}} de la commande make permet de changer de jeu de données pour faire les graphes, et le nombre de nœuds souhaités.
+
+\subparagraph{Mesurer le temps pris par nos fonctions} : la commande \textit{make test\_temps} permet de réaliser nos tests de complexités et d'obtenir nos courbes dans \textit{Images/courbes} avec un script gnuplot.
+
+\subparagraph{Expérimentation sur l'œuvre de Shakespeare} : la commande \textit{make exeprimentation\_shakespeare} permet de réaliser nos mesures sur le jeu de données obtenus dans la section 6 dans \textit{Images/courbes\_shakespeare} avec un script gnuplot.
+
+
+\subsection{Bilan}
+
 Ce devoir nous auras ainsi permis d'une part d'étudier la manière dont on peut implémenter des algorithmes étudiés en cours sous forme de pseudo code, et donc de voir quelles adaptations sont parfois nécessaires pour une mise en œuvre effective sur machine.
 
 L'utilisation du langage OCaml nous a également permis de réfléchir à la manière dont le paradigme de programmation utilisé influence la manière dont une structure et un algorithme seront implémentés.  Plus précisément, étudier une représentation, non usuelle, des tas sous forme arborescente nous a permis d'étudier comment adapter de manière purement fonctionnelle une structure de données dont le principe d'implémentation classique est très impératif.
@@ -991,7 +1008,6 @@ L'utilisation du langage OCaml nous a également permis de réfléchir à la man
 Les études expérimentales nous ont permis d'étudier le temps réel pris par nos algorithmes et de voir que ce dernier s'approchait des complexités théoriques calculées.
 
 Les trois dernières parties nous ont permis d'étudier comment mettre en place un jeu de données tiré d'exemples réels afin de comparer l'efficacité de nos différentes structures sur des manipulations usuelles. La réalisation de ces expériences nous a alors montré qu'il n'y a pas de structures parfaites étant meilleure sur toutes les opérations : le choix d'une structure plutôt qu'une autre pour répondre à un problème doit avant tout être fait en fonction de quelle opération sera le plus souvent effectuée. 
-
 
 
 \cleardoublepage

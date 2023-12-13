@@ -12,8 +12,10 @@ DM_MU4IN500
 ├── LICENSE
 ├── Transparents.pdf
 ├── Images
-│   ├── Arbres
-│   └── Graphiques
+│   ├── courbes
+│   ├── courbes_shakespeare
+│   ├── sauvegarde courbes pour rapport
+│   └── graphes
 ├── src
 │   ├── jeux_de_données
 │   │	├── cles_alea
@@ -23,8 +25,26 @@ DM_MU4IN500
 │   	├── file_binomiale.ml
 │   	├── int128.ml
 │   	├── manipulation_fichiers.ml
+│   	├── Makefile
+│   	├── md5.ml
 │   	├── tas_min_arbre.ml
 │   	└── tas_min_tab.ml
 └── test
-    ├── TODO
-    └── TODO
+    ├── experimentation_shakespeare.gnu
+    ├── experimentation_shakespeare.ml
+    ├── fit.log
+    ├── graphiques.gnu
+    ├── liste_mots.ml
+    ├── Makefile
+    ├── test_temps.ml
+    └── test_graphique.ml
+
+## Tests
+
+Pour lancer les différentes fonctions, il suffit de se rendre dans le répertoire test et d'ouvrir un terminal :
+
+* Pour obtenir des représentations graphiques dans Images/graphes : make test_graphique
+* Pour obtenir des mesures de complexité temporelles avec des jeux de données aléatoires : make test_temps
+* Pour obtenir les mesures réalisées sur le jeu de données obtenu à partir l'œuvre de Shakespeare : make exeperimentation_shakespeare
+  
+
