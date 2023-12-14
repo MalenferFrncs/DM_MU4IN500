@@ -623,18 +623,16 @@ type file_b = File of int * (tournois_b list) | Empty
 Nous définissons également les primitives suivante (leur code se trouve dans le fichier \textit{src/file\_binomiale.ml} :
 
 \bigskip \begin{lstlisting}
-let est_vide_t (t : tournois_b) : bool = (*...*)
-let degree (t:tournois_b) : int = (*...*)
-let union2Tid (t1:tournois_b) (t2:tournois_b) : tournois_b = (*...*)
-let rec  pow_2 (n:int) : int = (*...*)
-let rec tournois_reverse (ol : tournois_b list ) (nl : tournois_b list): tournois_b list = (*...*)
-let decapiter (t: tournois_b) : file_b = (*...*)
-let file(t:tournois_b) : file_b = (*...*)
-let est_vide_f (f: file_b ) : bool = (*...*)
-let rec last_tournois  (li : tournois_b list) : tournois_b = (*...*)
-let mindeg (f:file_b) : tournois_b = (*...*)
-let reste (f:file_b) : file_b = (*...*)
-let ajout_min (t:tournois_b) (f:file_b) : file_b = (*...*)
+let est_vide_t (t : tournois_b) : bool = (O(1))
+let degree (t:tournois_b) : int = (O(1))
+let union2Tid (t1:tournois_b) (t2:tournois_b) : tournois_b = (O(1))
+let rec  pow_2 (n:int) : int = (O(1))
+let decapiter (t: tournois_b) : file_b = (O(log n))
+let file(t:tournois_b) : file_b = (O(1))
+let est_vide_f (f: file_b ) : bool = (O(1))
+let mindeg (f:file_b) : tournois_b = (O(1))
+let reste (f:file_b) : file_b = (O(1))
+let ajout_min (t:tournois_b) (f:file_b) : file_b = (O(log n))
 \end{lstlisting} \bigskip
 
 \subsection{Fonctions fondamentales}
