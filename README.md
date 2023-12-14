@@ -4,6 +4,10 @@
 Le but du problème consiste à visualiser graphiquement les temps d’exécution sur des données
 réelles des algorithmes et structures de données vues en cours  (tas minimum, file binomiale, arborescence de recherche, sous forme d'arbre 234).
 
+## Récupérer les jeux de données
+
+Moodle nous limitant pour la taille de l'archive, nous n'avons pas pu inclure les fichiers des jeux de tests : pour effectuer nos expérimentations, il faut placer les deux dossiers dans src/jeux_de_données, en suivant l'arborescence de fichiers ci-dessous.
+
 ## Organisation du répertoire
 
 DM_MU4IN500
