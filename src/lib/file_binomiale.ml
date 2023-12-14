@@ -33,13 +33,13 @@ let rec  pow_2 (n:int) : int =
     Int.shift_left 1 n
 ;;
 
-let rec tournois_reverse (ol : tournois_b list ) (nl : tournois_b list): tournois_b list = 
-  match ol with
-  | Empty::_ | [] -> nl 
-  | e::Empty::_ | e::[] -> e::nl
-  | e::tl -> tournois_reverse tl (e::nl)
-
 let decapiter (t: tournois_b) : file_b =
+  let rec tournois_reverse (ol : tournois_b list ) (nl : tournois_b list): tournois_b list =
+    match ol with
+    | Empty::_ | [] -> nl
+    | e::Empty::_ | e::[] -> e::nl
+    | e::tl -> tournois_reverse tl (e::nl)
+  in
   match t with
   |Empty -> Empty
   |Racine(deg,cle,tl) -> File(((pow_2  deg )-1),(tournois_reverse tl []))
@@ -57,12 +57,7 @@ let est_vide_f (f: file_b ) : bool =
   | _-> false
 ;;
 
-let rec last_tournois  (li : tournois_b list) : tournois_b =
-  match li with
-  |e::[] -> e
-  |e::tl -> last_tournois tl
-  |[] -> Empty
-;;
+
 
 
 let mindeg (f:file_b) : tournois_b =
