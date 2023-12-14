@@ -620,7 +620,7 @@ type tournois_b = Racine of int * Int128.t * (tournois_b list)  | Empty
 type file_b = File of int * (tournois_b list) | Empty 
 \end{lstlisting} \bigskip
 
-Nous définissons également les primitives suivante (leur code se trouve dans le fichier \textit{src/file\_binomiale.ml} :
+Nous définissons également les primitives suivante (leur code se trouve dans le fichier \textit{src/file\_binomiale.ml}) :
 
 \bigskip \begin{lstlisting}
 let est_vide_t (t : tournois_b) : bool = (O(1))
