@@ -46,5 +46,22 @@ Pour lancer les différentes fonctions, il suffit de se rendre dans le répertoi
 * Pour obtenir des représentations graphiques dans Images/graphes : make test_graphique
 * Pour obtenir des mesures de complexité temporelles avec des jeux de données aléatoires : make test_temps
 * Pour obtenir les mesures réalisées sur le jeu de données obtenu à partir l'œuvre de Shakespeare : make exeperimentation_shakespeare
+
+## Références
+
+* Ernst E. Doberkat. An average case analysis of Foyd's algorithm to construct heaps. Infor-
+mation and Control, 61(2) :114-131, 1984.
+* Robert W. Floyd. Algorithm 245 : Treesort. Commun. ACM, 7(12) :701, dec 1964.
+* Donald E. Knuth. The Art of Computer Programming, Volume 3 : (2nd Ed.) Sorting and
+Searching, pages 144-145. Addison Wesley Longman Publishing Co., Inc., USA, 1998.
+* Donald E. Knuth. The Art of Computer Programming, Volume 3 : (2nd Ed.) Sorting and
+Searching, page 481-491. Addison Wesley Longman Publishing Co., Inc., USA, 1998.
+* Xavier Leroy, Damien Doligez, Alain Frisch, Jacques Garrigue, Didier Rémy, and Jérôme
+Vouillon. The ocaml system : Documentation and user's manual. INRIA, 3 :42.
+* Chris Okasaki. Purely Functionnal Data Structures. Cambridge University Press, 1998.
+page 17.
+* Ronald Rivest. The md5 message-digest algorithm. Technical report, 1992.
+* Jean Vuillemin. A data structure for manipulating priority queues.
+21(4) :309-315, apr 1978.
   
 

@@ -263,8 +263,8 @@ let union (hp1 :  heapTree) (hp2 :  heapTree) :  heapTree =
 
 
 
-(*Fonction permettant d'obtenir un fichier en langage dot pour avoir une représentation graphique du tas sous forme d'arbre*)
-let to_dot (nom : string) (hp : heapTree) : unit 
+(*Fonction permettant d'obtenir un fichier en langage dot pour avoir une représentation graphique du tas implémenter par un arbre*)
+let to_dot (nom : string) (hp : heapTree) : unit =
   let f = open_out nom in (*Ouverture du fichier où on met le graphe*)
   let rec print_noeud (hp : heapTree) : unit = 
     match hp with 

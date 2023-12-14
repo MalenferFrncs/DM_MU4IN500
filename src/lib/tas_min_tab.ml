@@ -52,7 +52,7 @@ let rec ajout (hp : heapArray) (elt : Int128.t) : heapArray =
     hp
   ) with Invalid_argument s ->(ajout (re_size hp) elt);;
 
-(*Fonction renvoyant *)
+(*Fonction renvoyant si le nœud d'indice i dans le tas hp est valide, c'est-à-dire inférieur à ses deux fils*)
 let est_non_valide (i : int) (hp : heapArray) : bool = 
   let (ind, _, tab) = hp in 
   if (fg i) > (!ind -1) then false    (*On est au bout du tas*) 
@@ -74,7 +74,7 @@ let est_non_valide (i : int) (hp : heapArray) : bool =
       )
     |None -> false;; 
 
-
+(*Fonction supprimant le minimum d'un tas*)
 let supprMin (hp : heapArray) : (Int128.t option * heapArray) = 
   let (ind, sz, tab) = hp in 
   try (
@@ -98,7 +98,7 @@ let supprMin (hp : heapArray) : (Int128.t option * heapArray) =
 
 
 
-
+(*Fonction ajoutant toute la liste l à un tas vide*)
 let ajout_iteratif (l : Int128.t list) : heapArray = 
   let rec aux (hp : heapArray) (l : Int128.t list) : heapArray =
     match l with
@@ -109,7 +109,7 @@ let ajout_iteratif (l : Int128.t list) : heapArray =
 
 
 
-
+(*Fonction permettant de "faire tas" d'un sous tas de hp ayant pour racine p*)
 let heapify (hp : heapArray) (p : int) : unit = 
   let (ind,sz, tab) = hp and i = ref p in
   while (est_non_valide !i hp) do
@@ -144,6 +144,7 @@ let heapify (hp : heapArray) (p : int) : unit =
   done; 
 ;;
 
+(*Fonction permettant de construire un tas en temps linéaire à partir d'une liste*)
 let construction (l : Int128.t list) : heapArray = 
   let lgth = List.length l in 
   let hp = makeHeapArray lgth lgth (Array.of_list (List.map (fun x -> Some(x)) l))
@@ -155,7 +156,8 @@ let construction (l : Int128.t list) : heapArray =
   done;
   hp;;
 
-
+(*Fonction réalisant l'union de hp1 et hp2 en passant fusionnant les deux tableau puis en appliquant les heapify du bas
+  vers le haut*)
 let union (h1 : heapArray) (h2 : heapArray) : heapArray = 
   let (ind1,sz1, tab1) = h1 and (ind2,sz2, tab2) = h2 in
   let newtab = (ref (!ind1+ !ind2), ref (!sz1 + !sz2), Array.append tab1 tab2) in
@@ -167,9 +169,7 @@ let union (h1 : heapArray) (h2 : heapArray) : heapArray =
   newtab;;
 
 
-
-
-(*Fonction crééant, ouvrant, et remplissant un fichier .dot dont le nom est passé en paramètres*)
+(*Fonction permettant d'obtenir un fichier en langage dot pour avoir une représentation graphique du tas implémenté par un tableau*)
 let to_dot (nom : string) (hp : heapArray) : unit =
   let f = open_out nom in (*Ouverture du fichier où on met le graphe*)
   (* *)
