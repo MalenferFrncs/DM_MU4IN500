@@ -423,7 +423,7 @@ Erreur asymptotique & +/- 2.464e-08 & +/- 0.001292 & +/- 5.662  & +/- 0.0006119\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/regression_ajout_iteratif_tab.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/regression_ajout_iteratif_tab.png}
 \caption{Mesure du temps pris par l'ajout itératif, tas sous forme de tableau}
 \label{fig1}
 \end{figure}
@@ -453,7 +453,7 @@ Erreur asymptotique & +/- 5.828e-08 & +/- 0.0006326 & +/- 4.284e+10   & +/- 1.27
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/regression_ajout_iteratif_arbre.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/regression_ajout_iteratif_arbre.png}
 \caption{Mesure du temps pris par l'ajout itératif, tas sous forme d'arbre}
 \label{fig2}
 \end{figure}
@@ -489,7 +489,7 @@ Erreur asymptotique & +/- 1.284e-08 & +/- 0.001147  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_cons_tab_regression.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/cplxt_cons_tab_regression.png}
 \caption{Mesure du temps pris par la construction, tas sous forme de tableau}
 \label{fig3}
 \end{figure}
@@ -516,7 +516,7 @@ Erreur asymptotique & +/- 3.17e-09 & +/- 0.0002832  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_cons_arbre_regression.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/cplxt_cons_arbre_regression.png}
 \caption{Mesure du temps pris par la construction, tas sous forme d'arbre}
 \label{fig4}
 \end{figure}
@@ -558,7 +558,7 @@ Erreur asymptotique & +/- 7.759e-09 & +/- 0.000693  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_union_tab_regression.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/cplxt_union_tab_regression.png}
 \caption{Mesure du temps pris par l'union, tas sous forme de tableau}
 \label{fig5}
 \end{figure}
@@ -585,7 +585,7 @@ Erreur asymptotique & +/- 6.106e-09 & +/- 0.0005454  \\
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_union_arbre_regression.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/cplxt_union_arbre_regression.png}
 \caption{Mesure du temps pris par l'union, tas sous forme d'arbre}
 \label{fig6}
 \end{figure}
@@ -616,7 +616,7 @@ Nous définissions sa structure, en OCaml, à l'aide de deux types récursifs :
 \bigskip \begin{lstlisting}
 (*Racine(degre,cle,fils)*)
 type tournois_b = Racine of int * Int128.t * (tournois_b list)  | Empty 
-(*File(indice,tournois) tournois le plus petit a droite de la liste *) 
+(*File(indice,tournois) tournois le plus petit a gauche de la liste *) 
 type file_b = File of int * (tournois_b list) | Empty 
 \end{lstlisting} \bigskip
 
@@ -717,7 +717,7 @@ Ces expérimentations; et celles de la section suivante ont été faites selon l
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_binomiale.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/cplxt_binomiale.png}
 \caption{Mesure du temps pris par la construction, file binomiale}
 \label{fig7}
 \end{figure}
@@ -731,7 +731,7 @@ La complexité théorique de l'union de deux files binomiales est $O(log (n))$. 
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.4]{../Images/svg courbes pour rapport/cplxt_union_file.png}
+\includegraphics[scale=0.4]{../Images/Courbes utilisées pour le rapport/cplxt_union_file.png}
 \caption{Mesure du temps pris par l'union de deux files binomiales de taille égale (en abscisse)}
 \label{fig8}
 \end{figure}
@@ -926,7 +926,7 @@ Nous obtenons les temps suivants :
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_construction_shakespeare.png}
+\includegraphics[scale=0.5]{../Images/Courbes utilisées pour le rapport/temps_construction_shakespeare.png}
 \caption{Temps pris par la construction du jeu de données pour nos différentes structures}
 \label{fig9}
 \end{figure}
@@ -941,7 +941,7 @@ Pour l'union, nous avons choisi de séparer notre liste en deux de manière alé
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_union_shakespeare.png}
+\includegraphics[scale=0.5]{../Images/Courbes utilisées pour le rapport/temps_union_shakespeare.png}
 \caption{Temps pris par l'union pour nos différentes structures}
 \label{fig10}
 \end{figure}
@@ -957,7 +957,7 @@ Pour la suppression du minimum, nous le faisons sur les structures construites a
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_suppr_shakespeare.png}
+\includegraphics[scale=0.5]{../Images/Courbes utilisées pour le rapport/temps_suppr_shakespeare.png}
 \caption{Temps pris par la fonction \textit{supprMin} sur nos différentes structures}
 \label{fig11}
 \end{figure}
@@ -971,7 +971,7 @@ Pour mesurer le temps pris par l'ajout, nous avons choisi de construire nos stru
 
 \begin{figure}[hbtp]
 \centering
-\includegraphics[scale=0.5]{../Images/svg courbes pour rapport/temps_ajout_shakespeare.png}
+\includegraphics[scale=0.5]{../Images/Courbes utilisées pour le rapport/temps_ajout_shakespeare.png}
 \caption{Temps pris par la fonction \textit{ajout} sur nos différentes structures}
 \label{fig12}
 \end{figure}

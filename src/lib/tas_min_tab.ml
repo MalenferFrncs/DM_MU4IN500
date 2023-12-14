@@ -10,14 +10,18 @@ let fg (i : int) = 2*i +1;;
 
 let fd (i : int) = 2*i +2;;
 
+(*Fonction créant un tas vide de taille sz*)
 let makeEmptyHeapArray (sz: int) : (heapArray) = (ref 0, ref sz, (Array.make sz None));;
 
+(*Fonction créant un tas à partir d'un tableau de clés (sous forme de type option)*)
 let makeHeapArray (ind : int) (sz : int) (tab : (Int128.t option) Array.t) : heapArray = (ref ind,ref sz,tab);;
 
+(*Retourne la valeur de size*)
 let size (h : heapArray) : int = 
   let (_,sz,_) = h in !sz
 
-
+(*Copie l'élément d'un tas minimum à l'indice i dans un autre tas. Si on dépasse la taille du tableau, on 
+  met none, la case est vide dans l'autre tas*)
 let copie (hp : heapArray) (i : int) : Int128.t option = 
   let (_,sz, tab) = hp in
   if i >= !sz then None else tab.(i);;
@@ -31,6 +35,7 @@ let re_size (hp : heapArray) : heapArray =
   sz := (Int.shift_left  !sz 1 ); 
   (ind, sz, ntab );;
 
+(*Fonction permettant d'ajouter un élément à un tas*)
 let rec ajout (hp : heapArray) (elt : Int128.t) : heapArray = 
   let (ind, sz, tab) = hp in 
   let i = ref !ind and ind_pere = ref (pere !ind) in 
@@ -47,7 +52,7 @@ let rec ajout (hp : heapArray) (elt : Int128.t) : heapArray =
     hp
   ) with Invalid_argument s ->(ajout (re_size hp) elt);;
 
-
+(*Fonction renvoyant *)
 let est_non_valide (i : int) (hp : heapArray) : bool = 
   let (ind, _, tab) = hp in 
   if (fg i) > (!ind -1) then false    (*On est au bout du tas*) 

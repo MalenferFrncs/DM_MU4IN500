@@ -274,7 +274,7 @@ Formule pour la régression : $(ax +b)$
 \bigskip \begin{lstlisting}
 (*Racine(degre,cle,fils)*)
 type tournois_b = Racine of int * Int128.t * (tournois_b list)  | Empty 
-(*File(indice,tournois) tournois le plus petit a droite de la liste *) 
+(*File(indice,tournois) tournois le plus petit a gauche de la liste *) 
 type file_b = File of int * (tournois_b list) | Empty 
 \end{lstlisting} \bigskip
 

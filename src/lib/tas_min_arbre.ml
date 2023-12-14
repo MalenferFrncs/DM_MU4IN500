@@ -26,7 +26,7 @@ let nbdesc (t :  heapTree) : int =
 let min (a : int) (b : int) : int = 
   if b< a then b else a
 
-
+(*Calcule si le tas courant a des éléments sur son dernier rang (utilisé par suppr)*)
 let elemSurDernierRang (h :  heapTree) = nbdesc h > (Int.shift_left 1 ((rank h)))-2
 
 
@@ -81,7 +81,7 @@ let reeq_tas_gauche (t : heapTree) (nfg : heapTree) (res : Int128.t) : heapTree 
 
 
 
-
+(*Fonction permettant d'ajouter x au tas h*)
 let rec ajout (h :  heapTree) (x : Int128.t) :   heapTree = 
   match h with 
   | E -> L(x)
@@ -105,7 +105,7 @@ let rec ajout (h :  heapTree) (x : Int128.t) :   heapTree =
       let nfg = ajout fg e in N (( min rfd (rank nfg) )+1,d+1, x, nfg, fd)
 
 
-
+(*Fonction permettant de supprimer le minimum d'un tas*)
 let rec supprMin (h :  heapTree) :  heapTree * Int128.t = 
   match h with 
   | E -> failwith "Empty heap"
@@ -128,18 +128,25 @@ let rec supprMin (h :  heapTree) :  heapTree * Int128.t =
       let (nfg, res) = supprMin fg in (reeq_tas_gauche h nfg res);; 
 
 
-
+(*Ajout itératif des feuilles*)
 let rec ajout_feuille_iter (l : Int128.t list) (h :  heapTree) :  heapTree = 
   match l with 
   | [] -> h
   | hd::tl -> ajout_feuille_iter tl (ajout h hd);;
 
+(*Fonction qui retire n éléments au tas (utilisés pour des tests préliminaires lors du développement de la structure)*)
 let rec retrait_feuille_iter (n : int) (h :  heapTree) :  heapTree = 
   if n = 0 then h else let ( h2, _) = supprMin h in retrait_feuille_iter (n-1) h2;;
 
+(*Fonction permettant d'appeler proprement ajout_iteratif à partir d'un tas vide*)
 let ajout_iteratif (l : Int128.t list) = 
   ajout_feuille_iter l E;;
-(*Idée : construire par le bas (en faisant les buble down) en utilisant la fin de la récursion pour récupérer les arbres
+
+
+
+
+(*Idée pour la construction : 
+  construire par le bas (en faisant les buble down) en utilisant la fin de la récursion pour récupérer les arbres
   construits précédemment pour réassembler avec l'élément de la liste actuelle*)
 
 let rec log2 x =
@@ -151,11 +158,6 @@ let two_pow (n : int) = Int.shift_left 1 n
 
 let empty_dernier_rang (n : int ) : int =
   (two_pow (log2 n+1))-1 - n
-
-
-
-
-
 
 
 let rec heapify (hp : heapTree) : heapTree = 
@@ -239,10 +241,11 @@ let rec make_tas (li : Int128.t list) (taille : int) :  (heapTree * Int128.t lis
 
 
 
-
+(*Fonction construisant un tas à partir d'une liste en O(n)*)
 let construction (li : Int128.t list) : heapTree = 
   let (hp,_) = make_tas li (List.length li) in hp;;
 
+(*Fonction transformant un tas en la liste de ses clés*)
 let rec heap_to_list (hp :  heapTree) (acc : Int128.t list) : Int128.t list = 
   match hp with 
   | E -> acc
@@ -250,7 +253,8 @@ let rec heap_to_list (hp :  heapTree) (acc : Int128.t list) : Int128.t list =
   | N(_,_,r,fg,fd) -> let lfg = (heap_to_list fg acc) in let lfd = heap_to_list fd lfg in r::lfd;;
 
 
-
+(*Fonction réalisant l'union de hp1 et hp2 en passant par la création d'une liste contenant tous leurs éléments
+   On suppose toutes les clés de hp1 et hp2 distinctes*)
 let union (hp1 :  heapTree) (hp2 :  heapTree) :  heapTree = 
   match (heap_to_list (N(0,0,(0l,0l,0l,0l),hp1, hp2)) []) with 
   | [] -> failwith "cas impossible"
@@ -259,10 +263,9 @@ let union (hp1 :  heapTree) (hp2 :  heapTree) :  heapTree =
 
 
 
-
-let to_dot (nom : string) (hp : heapTree) : unit =
+(*Fonction permettant d'obtenir un fichier en langage dot pour avoir une représentation graphique du tas sous forme d'arbre*)
+let to_dot (nom : string) (hp : heapTree) : unit 
   let f = open_out nom in (*Ouverture du fichier où on met le graphe*)
-  (* *)
   let rec print_noeud (hp : heapTree) : unit = 
     match hp with 
     | E -> ()

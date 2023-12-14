@@ -38,7 +38,7 @@ let of_str(str:string): t =
   in 
   (x1,x2,x3,x4)
 
-
+(*
 let to_str (cle : t) : string = 
   let (x1,x2,x3,x4) = cle in 
   let (sx1,sx2, sx3, sx4) = (
@@ -47,12 +47,12 @@ let to_str (cle : t) : string =
     (Printf.sprintf " %lx ." x3),
     (Printf.sprintf " %lx" x4)
   ) in String.cat sx1 (String.cat sx2 (String.cat sx3 sx4))
-
-(*Pour un affichage plus petit pour les diapos
+*)
+(*Pour un affichage plus petit pour les diapos*)
 let to_str (cle : t) : string = 
   let (x,_,_,_) = cle in
   Printf.sprintf "%lx" x;;
-*)
+
 
 let list_of_file (file_name : string) (nb_entier : int ): t list =
   let fileIN = open_in file_name in 

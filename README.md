@@ -14,7 +14,7 @@ DM_MU4IN500
 ├── Images
 │   ├── courbes
 │   ├── courbes_shakespeare
-│   ├── sauvegarde courbes pour rapport
+│   ├── courbes utilisées pour le rapport
 │   └── graphes
 ├── src
 │   ├── jeux_de_données

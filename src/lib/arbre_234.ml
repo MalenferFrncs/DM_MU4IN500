@@ -8,6 +8,8 @@ type arbre234 =
   | Noeud3 of Int128.t * Int128.t * arbre234 * arbre234 * arbre234 
   | Noeud4 of Int128.t * Int128.t * Int128.t * arbre234 * arbre234 * arbre234 * arbre234 
 
+
+(*Fonction testant si une clé est dans le nœud courant de l'arbre t*)
 let est_dans_noeud (cle : Int128.t) (t : arbre234) : bool = 
   match t with 
   | Empty -> false
@@ -17,6 +19,7 @@ let est_dans_noeud (cle : Int128.t) (t : arbre234) : bool =
   | Noeud3 (elt1,elt2,_,_,_) -> (Int128.eg elt1 cle) || (Int128.eg elt2 cle) 
   | Noeud4 (elt1,elt2,elt3,_,_,_,_) -> (Int128.eg elt1 cle) || (Int128.eg elt2 cle) || (Int128.eg elt3 cle) 
 
+(*Fonction permettant de rechercher une clé dans l'arbre*)
 let rec recherche (cle : Int128.t) (t : arbre234) : bool = 
   (est_dans_noeud cle t) ||(
     match t with 
@@ -42,9 +45,11 @@ let rec recherche (cle : Int128.t) (t : arbre234) : bool =
         recherche cle d
   )
 
+(*Exception utilisée pour l'ajout*)
 exception Eclatement of (Int128.t * (arbre234) * (arbre234)) ;;
 
-(*On suppose que cle n'est pas dans t*)
+(*On suppose que cle n'est pas dans t
+  Fonction permettant d'ajouter une clé à t*)
 let ajout (cle : Int128.t) (t : arbre234) : arbre234 = 
   let rec insertion234 (cle : Int128.t) (t : arbre234) : arbre234 = 
     if (est_dans_noeud cle t) then t 
@@ -123,12 +128,13 @@ let ajout (cle : Int128.t) (t : arbre234) : arbre234 =
 
 
 
-
+(*Fonction ajoutant itérativement toute une liste dans un arbre 234 (on suppose toutes les clés de l différentes)*)
 let rec ajout_iteratif (l : Int128.t list) (acc : arbre234) : arbre234 = 
   match l with
   | [] -> acc
   | hd :: tl -> ajout_iteratif tl (ajout hd acc);;
 
+(*Fonction permettant d'obtenir un fichier en langage dot pour avoir une représentation graphique de l'arbre 234*)
 let to_dot (nom : string) (t : arbre234) : unit = 
   let f = open_out nom in 
   let rec aux  (t : arbre234) : unit = 

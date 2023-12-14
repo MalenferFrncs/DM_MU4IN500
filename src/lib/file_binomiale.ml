@@ -190,7 +190,7 @@ let rec construction (liste_cles : Int128.t list): file_b =
   (*Fin de la construction*)
 
 
-
+(*Fonction permettant d'obtenir un fichier en langage dot pour avoir une représentation graphique de la file binomiale*)
 let rec to_dot (nom : string) (file_bino : file_b) : unit = 
   let f = open_out nom in 
   let rec fils_to_dot (pere : tournois_b)(tb : tournois_b) : unit = 

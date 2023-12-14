@@ -1,5 +1,6 @@
 open Int128;;
 
+(*Fonction permettant d'écrire dans un fichier nos complexités au bon format pour une liste calculée*)
 let write_complexite (nom_fichier : string) (data : (int*float) list) : unit = 
   let file = open_out nom_fichier in 
   let rec write_data_to_file (data : (int*float) list) : unit=
@@ -11,6 +12,7 @@ let write_complexite (nom_fichier : string) (data : (int*float) list) : unit =
   in write_data_to_file data ;
   close_out file;;
 
+(*Fonction permettant d'écrire dans un fichier nos complexités au bon format pour la section 6*)
 let write_comparaison_3_struct (nom_fichier : string) (data : float * float * float) : unit = 
   let f = open_out nom_fichier 
   and (arbre,tab, file) = data in 
